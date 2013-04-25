@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>RobotWeb Controller</title>
+  <script type="text/javascript" src="js/thrift.js"></script>
+  <script type="text/javascript" src="js/websocket_transport.js"></script>
+  <script type="text/javascript" src="js/user_service_types.js"></script>
+  <script type="text/javascript" src="js/UserService.js"></script>
+  <script type="text/javascript" src="js/control.js"></script>
+  <script type="text/javascript">
+    function loadPage() {
+    	initUserService();
+    }
+    
+    function unloadPage() {
+    	shutDownUserService();
+    }
+  </script>
+</head>
+<body onload="loadPage()" onunload="unloadPage()">
+  <table border="1">
+    <tr>
+      <td>Username: <input id="text_username" type="text" /></td>
+      <td>Robot ID: <input id="text_robotid" type="text" /></td>
+    </tr>
+  </table>
+  <br />
+  <table border="1">
+    <tr>
+      <td></td>
+      <td>
+        <input id="button_forward" type="button" value="Forward" onclick="onControl(this)" />
+      </td>
+      <td></td>
+      <td>
+        <input id="button_tilt_up" type="button" value="Tilt Up" onclick="onControl(this)" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input id="button_left" type="button" value="Left" onclick="onControl(this)" />
+      </td>
+      <td>
+        <input id="button_stop" type="button" value="Stop" onclick="onControl(this)" />
+      </td>
+      <td>
+        <input id="button_right" type="button" value="Right" onclick="onControl(this)" />
+      </td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <input id="button_backward" type="button" value="Backward" onclick="onControl(this)" />
+      </td>
+      <td></td>
+      <td>
+        <input id="button_tilt_down" type="button" value="Tilt Down" onclick="onControl(this)" />
+      </td>
+    </tr>
+  </table>
+  <br />
+  <p id="p_response">Loaded</p>
+</body>
+</html>
