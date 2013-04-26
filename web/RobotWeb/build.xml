@@ -1,0 +1,68 @@
+<project name="RobotWeb" default="war">
+  <property name="class_output_dir" value="build/classes"/>
+  <property name="war_output_dir" value="build/war"/>
+  <property name="tomcat_version" value="7.0.39"/>
+  <property name="tomcat_dir" value="${user.home}/tomcat/apache-tomcat-${tomcat_version}"/>
+  <property name="thrift_version" value="0.9.0"/>
+  <property name="thrift_dir" value="${user.home}/thrift/thrift-${thrift_version}"/>
+
+  <target name="clean">
+    <delete dir="build"/>
+    <delete dir="WebContent/WEB-INF/lib"/>
+  </target>
+
+  <target name="compile">
+    <mkdir dir="${class_output_dir}"/>
+    <javac srcdir="src"
+	   destdir="build/classes"
+	   source="1.7"
+	   target="1.7"
+	   includeantruntime="false">
+      <classpath>
+	<fileset dir="/usr/local/lib">
+	  <include name="*.jar"/>
+	</fileset>
+	<fileset dir="${tomcat_dir}/lib">
+	  <include name="*.jar"/>
+	</fileset>
+	<pathelement location="../../java/RcsThrift/build/jar/RcsThrift.jar"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="copy_dependencies">
+    <mkdir dir="WebContent/WEB-INF/lib"/>
+    <copy todir="WebContent/WEB-INF/lib">
+      <fileset dir="/usr/local/lib">
+	<include name="commons-lang-2.5.jar"/>
+	<include name="libthrift-0.9.0.jar"/>
+	<include name="log4j-1.2.14.jar"/>
+	<include name="slf4j-api-1.5.8.jar"/>
+	<include name="slf4j-log4j12-1.5.8.jar"/>
+      </fileset>
+      <fileset dir="../../java/RcsThrift/build/jar">
+	<include name="RcsThrift.jar"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="war" depends="compile,copy_dependencies">
+    <war destfile="${war_output_dir}/RobotWeb.war"
+	 webxml="WebContent/WEB-INF/web.xml">
+      <fileset dir="WebContent">
+	<exclude name="WEB-INF/**/*"/>
+      </fileset>
+      <fileset dir="${thrift_dir}/lib">
+	<include name="js/thrift.js"/>
+      </fileset>
+      <classes dir="${class_output_dir}"/>
+      <lib dir="WebContent/WEB-INF/lib"/>
+    </war>
+  </target>
+
+  <target name="deploy">
+    <delete dir="${tomcat_dir}/webapps/RobotWeb"/>
+    <delete file="${tomcat_dir}/webapps/RobotWeb.war"/>
+    <copy file="${war_output_dir}/RobotWeb.war" todir="${tomcat_dir}/webapps"/>
+  </target>
+</project>

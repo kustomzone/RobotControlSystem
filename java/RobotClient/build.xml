@@ -1,0 +1,48 @@
+<project name="RobotClient" default="jar">
+  <property name="class_output_dir" value="build/classes"/>
+  <property name="jar_output_dir" value="build/jar"/>
+
+  <path id="classpath">
+    <fileset dir="/usr/local/lib">
+      <include name="*.jar"/>
+    </fileset>
+    <pathelement location="../RcsThrift/build/jar/RcsThrift.jar"/>
+  </path>
+
+  <condition property="main_class"
+	     value="lib.robotics.rcs.client.RobotClient"
+	     else="lib.robotics.rcs.client.UserClient">
+    <equals arg1="${client}" arg2="robot"/>
+  </condition>
+
+  <target name="clean">
+    <delete dir="build"/>
+  </target>
+
+  <target name="compile">
+    <mkdir dir="${class_output_dir}"/>
+    <javac srcdir="src"
+	   destdir="build/classes"
+	   classpathref="classpath"
+	   source="1.7"
+	   target="1.7"
+	   includeantruntime="false"/>
+  </target>
+
+  <target name="jar" depends="compile">
+    <jar destfile="${jar_output_dir}/RobotClient.jar"
+	 basedir="${class_output_dir}"/>
+  </target>
+
+  <target name="run_user" depends="jar">
+    <java fork="true"
+	  classname="${main_class}">
+      <classpath>
+	<path refid="classpath"/>
+	<path location="${jar_output_dir}/RobotClient.jar"/>
+      </classpath>
+      <arg value="${arg1}"/>
+      <arg value="${arg2}"/>
+    </java>
+  </target>
+</project>
