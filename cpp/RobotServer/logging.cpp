@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "logging.hpp"
+
 #include <ctime>
 #include <iostream>
-
-#include "logging.hpp"
 
 namespace robot_control_system {
 

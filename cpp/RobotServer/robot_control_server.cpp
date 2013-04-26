@@ -20,7 +20,7 @@
 #include <string>
 #include <boost/shared_ptr.hpp>
 
-#include "../RcsThriftCpp/RobotControlService.h"
+#include "../RcsThrift/RobotControlService.h"
 #include "logging.hpp"
 #include "robot.hpp"
 #include "robot_db.hpp"

@@ -16,8 +16,9 @@
 */
 
 #include "robot.hpp"
-#include "../RcsThriftCpp/RobotControlService.h"
-#include "../RcsThriftCpp/UserService.h"
+
+#include "../RcsThrift/RobotControlService.h"
+#include "../RcsThrift/UserService.h"
 
 namespace robot_control_system {
 

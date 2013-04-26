@@ -20,7 +20,7 @@
 
 #include "macros.hpp"
 #include "thrift_server.hpp"
-#include "../RcsThriftCpp/RobotService.h"
+#include "../RcsThrift/RobotService.h"
 
 namespace robot_control_system {
 

@@ -15,12 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "user_service.hpp"
+
 #include <string>
 
 #include "logging.hpp"
 #include "robot.hpp"
 #include "robot_db.hpp"
-#include "user_service.hpp"
 
 namespace robot_control_system {
 
