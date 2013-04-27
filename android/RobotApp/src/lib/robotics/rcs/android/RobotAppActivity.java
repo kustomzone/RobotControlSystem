@@ -23,8 +23,6 @@ import java.io.OutputStreamWriter;
 import java.util.Set;
 import java.util.UUID;
 
-import com.tunaoezer.rcs.android.R;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
