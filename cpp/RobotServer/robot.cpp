@@ -23,9 +23,9 @@
 namespace robot_control_system {
 
 Robot::Robot(const string& robot_id)
-: robot_id_(robot_id),
-  online_(false),
-  robot_client_() {
+  : robot_id_(robot_id),
+    online_(false),
+    robot_client_() {
 }
 
 bool Robot::ExecuteCommand(const CommandRequest& request) {

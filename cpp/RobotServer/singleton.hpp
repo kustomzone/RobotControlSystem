@@ -34,6 +34,8 @@ class Singleton {
     NO_COPY_ASSIGN(Singleton);
 
   public:
+    virtual ~Singleton() {}
+
     static const T* instance() {
       return mutable_instance();
     }

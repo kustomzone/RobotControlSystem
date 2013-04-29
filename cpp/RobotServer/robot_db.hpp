@@ -38,7 +38,7 @@ class RobotDB : public Singleton<RobotDB> {
     NO_COPY_ASSIGN(RobotDB);
 
   public:
-    ~RobotDB();
+    virtual ~RobotDB();
 
     // Initializes the database with built-in robots.
     static void Initialize();
