@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -lthrift -lRcsThriftCpp
+LIBS := -lthrift -lRcsThriftCpp -lmysqlclient -lpthread -lz -lm -lrt -ldl
 
