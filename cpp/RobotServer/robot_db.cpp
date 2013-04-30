@@ -35,10 +35,6 @@ RobotDB::~RobotDB() {
   });
 }
 
-//static
-void RobotDB::Initialize() {
-}
-
 // static
 Robot* RobotDB::AddRobot(const string& robot_id, const string& robot_name) {
   return mutable_instance()->AddRobotImpl(robot_id, robot_name);

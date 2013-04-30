@@ -40,9 +40,6 @@ class RobotDB : public Singleton<RobotDB> {
   public:
     virtual ~RobotDB();
 
-    // Initializes the database with built-in robots.
-    static void Initialize();
-
     // Adds a robot with the given name and id to the database. Each robot must have a
     // unique id.
     // If the robot does not already exist in the database creates a new Robot instance.

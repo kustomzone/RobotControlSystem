@@ -25,11 +25,13 @@
 #include "robot_db.hpp"
 #include "robot_service.hpp"
 #include "singleton.hpp"
+#include "users_robots_db.hpp"
 #include "user_service.hpp"
 
 static const int kUserServerPort = 6100;
 static const int kRobotServerPort = 6600;
 static const int kRobotProxyServerPort = 6700;
+static const char kSqlConfigFilePath[] = "sql.config";
 
 namespace robot_control_system {
 
@@ -51,8 +53,14 @@ class Main : public Singleton<Main> {
         return 1;
       }
 
-      LOG_INFO("Initializing robot DB...");
-      RobotDB::Initialize();
+      LOG_INFO("Connecting to SQL database...");
+      users_robots_db_.reset(UsersRobotsDb::Open(kSqlConfigFilePath));
+      if (users_robots_db_.get() == nullptr) {
+        LOG_ERROR("Failed to connect to the SQL database.");
+        return 1;
+      }
+      int robot_count = users_robots_db_->LoadAllRobots();
+      LOG_INFO("Loaded " + std::to_string(robot_count) + " robots.");
 
       LOG_INFO("Starting robot server...");
       Server::Params robot_server_params(kRobotServerPort);
@@ -81,6 +89,8 @@ class Main : public Singleton<Main> {
 
     // Shuts down all servers and waits for all pending requests to complete.
     void Exit() {
+      LOG_INFO("Disconnecting from SQL database.");
+      if (users_robots_db_.get() != nullptr) users_robots_db_->Close();
       LOG_INFO("Shutting down user server...");
       if (user_server_.get() != nullptr) user_server_->Stop();
       LOG_INFO("Shutting down robot proxy server...");
@@ -105,6 +115,7 @@ class Main : public Singleton<Main> {
       }
     }
 
+    unique_ptr<UsersRobotsDb> users_robots_db_;
     unique_ptr<Server> robot_server_;
     unique_ptr<ProxyServer> robot_proxy_server_;
     unique_ptr<Server> user_server_;
