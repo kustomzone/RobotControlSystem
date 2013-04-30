@@ -34,7 +34,7 @@
 	 basedir="${class_output_dir}"/>
   </target>
 
-  <target name="run_user" depends="jar">
+  <target name="run" depends="jar">
     <java fork="true"
 	  classname="${main_class}">
       <classpath>
