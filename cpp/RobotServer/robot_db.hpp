@@ -43,10 +43,11 @@ class RobotDB : public Singleton<RobotDB> {
     // Initializes the database with built-in robots.
     static void Initialize();
 
-    // Adds a robot with the given id to the database. Each robot must have a unique id.
+    // Adds a robot with the given name and id to the database. Each robot must have a
+    // unique id.
     // If the robot does not already exist in the database creates a new Robot instance.
     // Returns a pointer to the robot. Maintains ownership of the robot.
-    static Robot* AddRobot(const string& robot_id);
+    static Robot* AddRobot(const string& robot_id, const string& robot_name);
 
     // Returns a pointer to the robot with the specified id or null if no such robot
     // exists.
@@ -58,7 +59,7 @@ class RobotDB : public Singleton<RobotDB> {
     // Singleton.
     RobotDB();
 
-    Robot* AddRobotImpl(const string& robot_id);
+    Robot* AddRobotImpl(const string& robot_id, const string& robot_name);
 
     Robot* GetRobotImpl(const string& robot_id) const;
 

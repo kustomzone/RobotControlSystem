@@ -37,18 +37,17 @@ RobotDB::~RobotDB() {
 
 //static
 void RobotDB::Initialize() {
-  AddRobot("r1");
 }
 
 // static
-Robot* RobotDB::AddRobot(const string& robot_id) {
-  return mutable_instance()->AddRobotImpl(robot_id);
+Robot* RobotDB::AddRobot(const string& robot_id, const string& robot_name) {
+  return mutable_instance()->AddRobotImpl(robot_id, robot_name);
 }
 
-Robot* RobotDB::AddRobotImpl(const string& robot_id) {
+Robot* RobotDB::AddRobotImpl(const string& robot_id, const string& robot_name) {
   unordered_map<string, Robot*>::iterator it = robots_.find(robot_id);
   if (it != robots_.end()) return it->second;
-  Robot* robot = new Robot(robot_id);
+  Robot* robot = new Robot(robot_id, robot_name);
   robots_.insert(make_pair(robot_id, robot));
   return robot;
 }

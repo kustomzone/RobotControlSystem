@@ -22,8 +22,9 @@
 
 namespace robot_control_system {
 
-Robot::Robot(const string& robot_id)
+Robot::Robot(const string& robot_id, const string& robot_name)
   : robot_id_(robot_id),
+    robot_name_(robot_name),
     online_(false),
     robot_client_() {
 }

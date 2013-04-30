@@ -37,14 +37,23 @@ class Robot {
     NO_COPY_ASSIGN(Robot);
 
   public:
-    explicit Robot(const string& robot_id);
+    Robot(const string& robot_id, const string& robot_name);
 
     // Globally unique robot id.
     const string& robot_id() const {
       return robot_id_;
     }
 
-	// True if the robot can be reached and execute commands.
+    // Friendly name of robot.
+    const string& robot_name() const {
+      return robot_name_;
+    }
+
+    void set_robot_name(const string& robot_name) {
+      robot_name_ = robot_name;
+    }
+
+    // True if the robot can be reached and execute commands.
     bool online() const {
       return online_;
     }
@@ -66,6 +75,7 @@ class Robot {
 
   private:
     string robot_id_;
+    string robot_name_;
     bool online_;
     boost::shared_ptr<RobotControlServiceClient> robot_client_;
 };
