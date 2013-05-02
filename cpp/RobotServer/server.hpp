@@ -24,7 +24,7 @@
 
 namespace apache {
   namespace thrift {
-    class TProcessor;
+    class TProcessorFactory;
     namespace server { class TServer; }
   }
 }
@@ -74,16 +74,14 @@ class Server {
     void Join();
 
   protected:
-    explicit Server(const Params& params);
-
-    // Returns the implementation of the server processor.
-    // This class takes ownership of the processor.
-    virtual apache::thrift::TProcessor* CreateProcessor() = 0;
+    // processor_factory: Returns Thrift service specific processors.
+    Server(const Params& params, apache::thrift::TProcessorFactory* processor_factory);
 
   private:
     Params params_;
     boost::shared_ptr<apache::thrift::server::TServer> server_;
     boost::shared_ptr<StlThread> server_thread_;
+    boost::shared_ptr<apache::thrift::TProcessorFactory> processor_factory_;
 };
 
 }

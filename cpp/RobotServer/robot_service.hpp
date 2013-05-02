@@ -42,7 +42,7 @@ class RobotService : public RobotServiceIf {
 /*
  * Thrift server for the RobotService.
  */
-class RobotServiceServer : public ThriftServer<RobotService, RobotServiceProcessor> {
+class RobotServiceServer : public THRIFT_SERVER(RobotService) {
     NO_COPY_ASSIGN(RobotServiceServer);
 
   public:

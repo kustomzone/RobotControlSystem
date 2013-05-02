@@ -33,7 +33,7 @@
 
 namespace robot_control_system {
 
-using apache::thrift::TProcessor;
+using apache::thrift::TProcessorFactory;
 using apache::thrift::concurrency::ThreadFactory;
 using apache::thrift::concurrency::ThreadManager;
 using apache::thrift::protocol::TBinaryProtocolFactory;
@@ -44,10 +44,11 @@ using apache::thrift::transport::TServerSocket;
 using apache::thrift::transport::TServerTransport;
 using apache::thrift::transport::TTransportFactory;
 
-Server::Server(const Params& params)
+Server::Server(const Params& params, TProcessorFactory* processor_factory)
   : params_(params),
     server_(),
-    server_thread_() {
+    server_thread_(),
+    processor_factory_(processor_factory) {
 }
 
 Server::~Server() {
@@ -62,9 +63,8 @@ void Server::Start() {
   boost::shared_ptr<TServerTransport> transport(new TServerSocket(params_.server_port));
   boost::shared_ptr<TTransportFactory> transport_factory(new TBufferedTransportFactory());
   boost::shared_ptr<TProtocolFactory> protocol_factory(new TBinaryProtocolFactory());
-  boost::shared_ptr<TProcessor> processor(CreateProcessor());
   server_.reset(new TThreadPoolServer(
-      processor,
+      processor_factory_,
       transport,
       transport_factory,
       protocol_factory,

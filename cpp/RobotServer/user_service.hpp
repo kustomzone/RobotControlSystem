@@ -40,7 +40,8 @@ class UserService : public UserServiceIf {
 /*
  * Thrift server for the UserService.
  */
-class UserServiceServer : public ThriftServer<UserService, UserServiceProcessor> {
+class UserServiceServer : public THRIFT_SERVER(UserService)
+{
     NO_COPY_ASSIGN(UserServiceServer);
 
   public:
