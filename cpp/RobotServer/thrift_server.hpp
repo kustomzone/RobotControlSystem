@@ -83,6 +83,7 @@ class ThriftServer : public Server {
 // The default class only specializes ThriftServer.
 #define DEFINE_THRIFT_SERVER_WITH_NAME(THandler, ServerClassName) \
     class ServerClassName : public THRIFT_SERVER(THandler) { \
+        NO_COPY_ASSIGN(ServerClassName); \
       public: \
         explicit ServerClassName(const Params& params) : ThriftServer(params) {} \
     }
