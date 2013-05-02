@@ -39,17 +39,7 @@ class RobotService : public RobotServiceIf {
     virtual void Logout(RobotServiceResponse& response, const LogoutRequest& request);
 };
 
-/*
- * Thrift server for the RobotService.
- */
-class RobotServiceServer : public THRIFT_SERVER(RobotService) {
-    NO_COPY_ASSIGN(RobotServiceServer);
-
-  public:
-    explicit RobotServiceServer(const Params& params)
-      : ThriftServer(params) {
-    }
-};
+DEFINE_THRIFT_SERVER(RobotService);
 
 }
 

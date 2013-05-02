@@ -37,18 +37,7 @@ class UserService : public UserServiceIf {
     virtual void SendCommand(CommandResponse& response, const CommandRequest& request);
 };
 
-/*
- * Thrift server for the UserService.
- */
-class UserServiceServer : public THRIFT_SERVER(UserService)
-{
-    NO_COPY_ASSIGN(UserServiceServer);
-
-  public:
-    explicit UserServiceServer(const Params& params)
-      : ThriftServer(params) {
-    }
-};
+DEFINE_THRIFT_SERVER(UserService);
 
 }
 
