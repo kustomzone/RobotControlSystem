@@ -27,25 +27,34 @@ import lib.robotics.rcs.server.Command;
 public class Robot {
 	
 	private String robot_id_;
-	private RobotServiceClient client_;
+	private String robot_name_;
 	private boolean online_;
 	
 	/**
 	 * @param robot_id A globally unique robot ID.
-	 * @param client Client used to connect to the server.
+	 * @param robot_name Display name of robot.
+	 * @param online True if the robot is online.
 	 */
-	public Robot(String robot_id, RobotServiceClient client) {
+	public Robot(String robot_id, String robot_name, boolean online) {
 		this.robot_id_ = robot_id;
-		this.client_ = client;
-		online_ = false;
+		this.robot_name_ = robot_name;
+		online_ = online;
 	}
 	
 	public String getRobotId() {
 		return robot_id_;
 	}
 	
+	public String getRobotName() {
+		return robot_name_;
+	}
+	
 	public boolean isOnline() {
 		return online_;
+	}
+	
+	public void setOnline(boolean online) {
+		this.online_ = online;
 	}
 	
 	/**
@@ -53,7 +62,7 @@ public class Robot {
 	 */
 	public void login() {
 		if (online_) return;
-		online_ = client_.login(this);
+		online_ = true;
 	}
 	
 	/**
@@ -61,7 +70,6 @@ public class Robot {
 	 */
 	public void logout() {
 		if (!online_) return;
-		client_.logout(this);
 		online_ = false;
 	}
 	

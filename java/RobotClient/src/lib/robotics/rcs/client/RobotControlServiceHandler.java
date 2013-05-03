@@ -17,6 +17,8 @@
 
 package lib.robotics.rcs.client;
 
+import java.net.SocketException;
+
 import org.apache.thrift.TException;
 import org.apache.thrift.TProcessor;
 import org.apache.thrift.protocol.TBinaryProtocol;
@@ -112,7 +114,10 @@ public class RobotControlServiceHandler extends Thread implements RobotControlSe
 				transport_.close();
 			}
 		} catch (TTransportException e) {
-			e.printStackTrace();
+			if (e.getCause() == null ||
+				e.getCause().getClass() != SocketException.class) {
+				e.printStackTrace();
+			}
 		} catch (TException e) {
 			e.printStackTrace();
 		}

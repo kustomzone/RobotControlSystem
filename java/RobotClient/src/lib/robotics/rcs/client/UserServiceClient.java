@@ -17,6 +17,10 @@
 
 package lib.robotics.rcs.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
@@ -24,10 +28,14 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 
+import lib.robotics.rcs.server.AccessDeniedException;
 import lib.robotics.rcs.server.Command;
 import lib.robotics.rcs.server.CommandRequest;
 import lib.robotics.rcs.server.CommandResponse;
 import lib.robotics.rcs.server.CommandStatus;
+import lib.robotics.rcs.server.RobotInfo;
+import lib.robotics.rcs.server.RobotStatus;
+import lib.robotics.rcs.server.UserLoginRequest;
 import lib.robotics.rcs.server.UserService;
 
 /**
@@ -76,6 +84,93 @@ public class UserServiceClient {
 		transport_.close();
 		transport_ = null;
 		client_ = null;
+	}
+	
+	/**
+	 * Sends a login request. 
+	 * @param user User to be logged in.
+	 * @param password User password.
+	 * @return True if successfully logged in.
+	 */
+	public boolean login(User user, String password) {
+		UserLoginRequest request = new UserLoginRequest();
+		request.setUsername(user.getUserName());
+		request.setPassword(DigestUtils.shaHex(password + user.getUserName()));
+		try {
+			return client_.Login(request);
+		} catch (TException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	/**
+	 * Sends a logout request.
+	 */
+	public void logout() {
+		try {
+			client_.Logout();
+		} catch (TException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Logs in the specified robot.
+	 * @param robot Robot.
+	 * @return True if logged in.
+	 */
+	public boolean loginRobot(Robot robot) {
+		if (robot.isOnline()) return true;
+		try {
+			if (client_.SetRobotStatus(robot.getRobotId(), RobotStatus.ONLINE) == RobotStatus.ONLINE) {
+				robot.setOnline(true);
+				return true;
+			}
+		} catch (AccessDeniedException e) {
+			e.printStackTrace();
+		} catch (TException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	/**
+	 * Logs out the specified robot.
+	 * @param robot Robot.
+	 */
+	public void logoutRobot(Robot robot) {
+		if (!robot.isOnline()) return;
+		try {
+			if (client_.SetRobotStatus(robot.getRobotId(), RobotStatus.ONLINE) == RobotStatus.ONLINE) {
+				robot.setOnline(false);
+			}
+		} catch (AccessDeniedException e) {
+			e.printStackTrace();
+		} catch (TException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Retrieves all robots to which user has access.
+	 * @return List of user robots or null if error.
+	 */
+	public List<Robot> listRobots() {
+		try {
+			List<Robot> robots = new ArrayList<Robot>();
+			List<RobotInfo> robot_infos = client_.ListRobots().getRobots();
+			for (RobotInfo info : robot_infos) {
+				robots.add(new Robot(info.getRobot_id(),
+						   info.getRobot_name(),
+						   info.getRobot_status() == RobotStatus.ONLINE));
+			}
+			return robots;
+		} catch (TException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	/**

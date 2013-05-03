@@ -17,6 +17,9 @@
 
 package lib.robotics.rcs.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lib.robotics.rcs.server.Command;
 
 /**
@@ -28,6 +31,7 @@ public class User {
 
 	private String user_name_;
 	private UserServiceClient client_;
+	private List<Robot> robots_;
 
 	/**
 	 * @param user_name User name to be used to communicate with the Robot Control Server.
@@ -36,10 +40,36 @@ public class User {
 	public User(String user_name, UserServiceClient client) {
 		this.user_name_ = user_name;
 		this.client_ = client;
+		robots_ = null;
 	}
 	
 	public String getUserName() {
 		return user_name_;
+	}
+	
+	public List<Robot> getRobots() {
+		return robots_;
+	}
+	
+	/**
+	 * Logs in the user.
+	 * @param password User password.
+	 * @return True if login is successful.
+	 */
+	public boolean login(String password) {
+		if (client_.login(this, password)) {
+			robots_ = client_.listRobots();
+			if (robots_ == null) robots_ = new ArrayList<Robot>();
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Logs out user.
+	 */
+	public void logout() {
+		client_.logout();
 	}
 	
 	/**

@@ -17,18 +17,13 @@
 
 package lib.robotics.rcs.client;
 
-import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 
-import lib.robotics.rcs.server.LoginRequest;
-import lib.robotics.rcs.server.LogoutRequest;
-import lib.robotics.rcs.server.RequestStatus;
 import lib.robotics.rcs.server.RobotService;
-import lib.robotics.rcs.server.RobotServiceResponse;
 
 /**
  * @author Tuna Oezer
@@ -75,40 +70,7 @@ public class RobotServiceClient {
 		if (transport_ == null) return;
 		transport_.close();
 		transport_ = null;
+		if (client_ == null) return;  // Suppress warning. TODO: remove
 		client_ = null;
-	}
-
-	/**
-	 * Sends a login request to the robot control server.
-	 * @param robot The robot to be logged in.
-	 * @return Returns true on success. 
-	 */
-	public boolean login(Robot robot) {
-		LoginRequest request = new LoginRequest();
-		request.setRobot_id(robot.getRobotId());
-		try {
-			RobotServiceResponse response = client_.Login(request); 
-			return response.getStatus() == RequestStatus.OK;
-		} catch (TException e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	/**
-	 * Sends a logout request to the robot control server.
-	 * @param robot The robot to be logged out.
-	 * @return Returns true on success. 
-	 */
-	public boolean logout(Robot robot) {
-		LogoutRequest request = new LogoutRequest();
-		request.setRobot_id(robot.getRobotId());
-		try {
-			RobotServiceResponse response = client_.Logout(request);
-			return response.getStatus() == RequestStatus.OK;
-		} catch (TException e) {
-			e.printStackTrace();
-		}
-		return false;
 	}
 }

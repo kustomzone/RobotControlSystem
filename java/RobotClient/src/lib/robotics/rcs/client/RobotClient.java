@@ -17,7 +17,8 @@
 
 package lib.robotics.rcs.client;
 
-import java.io.IOException;
+import java.io.Console;
+import java.util.List;
 
 /**
  * @author Tuna Oezer
@@ -31,36 +32,56 @@ public class RobotClient {
 	 * @param args Format: robot@server
 	 */
 	public static void main(String[] args) {
+		Console console = System.console();
 		if (args.length < 1) {
-			System.out.println("Missing argument: robot@server");
+			console.printf("Missing argument(s): user@server\n");
 			return;
 		}
-		String robot_uri = args[0];
-		int i = robot_uri.indexOf('@');
-		if (i < 0) {
-			System.out.println("Invalid robot URI.");
+		String user_uri = args[0];
+		int z = user_uri.indexOf('@');
+		if (z < 0) {
+			console.printf("Invalid user URI.\n");
 		}
-		String robot_id = robot_uri.substring(0, i);
-		String server = robot_uri.substring(i + 1);
-		RobotServiceClient client = new RobotServiceClient(server);
-		Robot robot = new Robot(robot_id, client);
+		String user_name = user_uri.substring(0, z);
+		String server = user_uri.substring(z + 1);
+		UserServiceClient client = new UserServiceClient(server);
+		User user = new User(user_name, client);
 		client.open();
-		System.out.println("Logging in...");
-		robot.login();
-		if (!robot.isOnline()) System.out.println("Log in error.");
-		System.out.println("Starting RobotControlServiceHandler...");
-		RobotControlServiceHandler handler = new RobotControlServiceHandler(server, robot);
-		handler.startService();
-		System.out.println("RobotControlServiceHandler is running.");
-		try {
-			System.in.read();
-		} catch (IOException e) {
-			e.printStackTrace();
+		char[] password = console.readPassword("Password: ");
+		if (user.login(String.valueOf(password))) {
+			console.printf("Robots:\n");
+			List<Robot> robots = user.getRobots();
+			for (int i = 0; i < robots.size(); i++) {
+				Robot robot = robots.get(i);
+				console.printf("%s: %s %s\n",
+							   robot.getRobotId(),
+							   robot.getRobotName(),
+							   robot.isOnline() ? "(online)" : "(offline)");
+			}
+			String robot_id = console.readLine("Log in with: ");
+			if (!robot_id.equals("q")) {
+				Robot robot = null;
+				for (Robot r : user.getRobots()) {
+					if (r.getRobotId().equals(robot_id)) {
+						robot = r;
+						break;
+					}
+				}
+				if (!client.loginRobot(robot)) {
+					console.printf("Robot login error.\n");
+				}
+				console.printf("Starting RobotControlServiceHandler...\n");
+				RobotControlServiceHandler handler = new RobotControlServiceHandler(server, robot);
+				handler.startService();
+				console.printf("RobotControlServiceHandler is running.");
+				console.readLine();
+				console.printf("Stopping RobotControlServiceHandler...");
+				handler.stopService();
+				client.logoutRobot(robot);
+			}
+		} else {
+			console.printf("Log in error.\n");
 		}
-		System.out.println("Stopping RobotControlServiceHandler...");
-		handler.stopService();
-		System.out.println("Logging out...");
-		robot.logout();
 		client.close();
 	}
 

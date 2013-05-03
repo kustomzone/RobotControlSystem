@@ -17,9 +17,9 @@
 
 package lib.robotics.rcs.client;
 
-import java.io.BufferedReader;
+import java.io.Console;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.List;
 
 import lib.robotics.rcs.server.Command;
 
@@ -36,39 +36,55 @@ public class UserClient {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
-		if (args.length < 2) {
-			System.out.println("Missing argument(s): user@server robot_id");
+		Console console = System.console();
+		if (args.length < 1) {
+			console.printf("Missing argument(s): user@server\n");
 			return;
 		}
 		String user_uri = args[0];
-		int i = user_uri.indexOf('@');
-		if (i < 0) {
-			System.out.println("Invalid user URI.");
+		int z = user_uri.indexOf('@');
+		if (z < 0) {
+			console.printf("Invalid user URI.\n");
 		}
-		String user_name = user_uri.substring(0, i);
-		String server = user_uri.substring(i + 1);
+		String user_name = user_uri.substring(0, z);
+		String server = user_uri.substring(z + 1);
 		UserServiceClient client = new UserServiceClient(server);
-		String robot_id = args[1];
 		User user = new User(user_name, client);
 		client.open();
-		BufferedReader cin = new BufferedReader(new InputStreamReader(System.in));
-		char command;
-		do {
-			System.out.print("> ");
-			System.out.flush();
-			String input = cin.readLine();
-			command = input.charAt(0);
-			switch (command) {
-				case 'x': user.sendCommand(robot_id, Command.STOP); break;
-				case 'w': user.sendCommand(robot_id, Command.MOVE_FORWARD); break;
-				case 's': user.sendCommand(robot_id, Command.MOVE_BACKWARD); break;
-				case 'a': user.sendCommand(robot_id, Command.TURN_LEFT); break;
-				case 'd': user.sendCommand(robot_id, Command.TURN_RIGHT); break;
-				case 'r': user.sendCommand(robot_id, Command.TILT_UP); break;
-				case 'f': user.sendCommand(robot_id, Command.TILT_DOWN); break;
-				default: break;
+		char[] password = console.readPassword("Password: ");
+		if (user.login(String.valueOf(password))) {
+			console.printf("Robots:\n");
+			List<Robot> robots = user.getRobots();
+			for (int i = 0; i < robots.size(); i++) {
+				Robot robot = robots.get(i);
+				console.printf("%s: %s %s\n",
+							   robot.getRobotId(),
+							   robot.getRobotName(),
+							   robot.isOnline() ? "(online)" : "(offline)");
 			}
-		} while (command != 'q');
+			String robot_id = console.readLine("Connect to: ");
+			if (!robot_id.equals("q")) {
+				char command;
+				do {
+					console.printf("> ");
+					String input = console.readLine();
+					command = input.charAt(0);
+					switch (command) {
+						case 'x': user.sendCommand(robot_id, Command.STOP); break;
+						case 'w': user.sendCommand(robot_id, Command.MOVE_FORWARD); break;
+						case 's': user.sendCommand(robot_id, Command.MOVE_BACKWARD); break;
+						case 'a': user.sendCommand(robot_id, Command.TURN_LEFT); break;
+						case 'd': user.sendCommand(robot_id, Command.TURN_RIGHT); break;
+						case 'r': user.sendCommand(robot_id, Command.TILT_UP); break;
+						case 'f': user.sendCommand(robot_id, Command.TILT_DOWN); break;
+						default: break;
+					}
+				} while (command != 'q');
+			}
+			user.logout();
+		} else {
+			console.printf("Log in error.\n");
+		}
 		client.close();
 	}
 }
