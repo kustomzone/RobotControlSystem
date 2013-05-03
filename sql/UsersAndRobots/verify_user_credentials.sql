@@ -20,7 +20,7 @@
  */
 CREATE FUNCTION VerifyUserCredentials (
     param_username VARCHAR(128),
-    param_password VARCHAR(32))
+    param_password VARCHAR(64))
 RETURNS BOOL
 READS SQL DATA
 RETURN
