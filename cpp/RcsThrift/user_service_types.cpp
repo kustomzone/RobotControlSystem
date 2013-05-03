@@ -10,6 +10,16 @@
 
 namespace robot_control_system {
 
+int _kRobotStatusValues[] = {
+  RobotStatus::OFFLINE,
+  RobotStatus::ONLINE
+};
+const char* _kRobotStatusNames[] = {
+  "OFFLINE",
+  "ONLINE"
+};
+const std::map<int, const char*> _RobotStatus_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(2, _kRobotStatusValues, _kRobotStatusNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
+
 int _kCommandValues[] = {
   Command::STOP,
   Command::MOVE_FORWARD,
@@ -32,15 +42,272 @@ const std::map<int, const char*> _Command_VALUES_TO_NAMES(::apache::thrift::TEnu
 
 int _kCommandStatusValues[] = {
   CommandStatus::OK,
-  CommandStatus::OFFLINE,
-  CommandStatus::ERROR
+  CommandStatus::ERROR,
+  CommandStatus::OFFLINE
 };
 const char* _kCommandStatusNames[] = {
   "OK",
-  "OFFLINE",
-  "ERROR"
+  "ERROR",
+  "OFFLINE"
 };
 const std::map<int, const char*> _CommandStatus_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(3, _kCommandStatusValues, _kCommandStatusNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
+
+int _kSecurityErrorValues[] = {
+  SecurityError::USER_NOT_LOGGED_IN,
+  SecurityError::INSUFFICIENT_RIGHTS
+};
+const char* _kSecurityErrorNames[] = {
+  "USER_NOT_LOGGED_IN",
+  "INSUFFICIENT_RIGHTS"
+};
+const std::map<int, const char*> _SecurityError_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(2, _kSecurityErrorValues, _kSecurityErrorNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
+
+const char* UserLoginRequest::ascii_fingerprint = "07A9615F837F7D0A952B595DD3020972";
+const uint8_t UserLoginRequest::binary_fingerprint[16] = {0x07,0xA9,0x61,0x5F,0x83,0x7F,0x7D,0x0A,0x95,0x2B,0x59,0x5D,0xD3,0x02,0x09,0x72};
+
+uint32_t UserLoginRequest::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->username);
+          this->__isset.username = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->password);
+          this->__isset.password = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t UserLoginRequest::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  xfer += oprot->writeStructBegin("UserLoginRequest");
+
+  xfer += oprot->writeFieldBegin("username", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString(this->username);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("password", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString(this->password);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(UserLoginRequest &a, UserLoginRequest &b) {
+  using ::std::swap;
+  swap(a.username, b.username);
+  swap(a.password, b.password);
+  swap(a.__isset, b.__isset);
+}
+
+const char* RobotInfo::ascii_fingerprint = "4F8ABE747D9A2DF14F7E84DDBE60D55C";
+const uint8_t RobotInfo::binary_fingerprint[16] = {0x4F,0x8A,0xBE,0x74,0x7D,0x9A,0x2D,0xF1,0x4F,0x7E,0x84,0xDD,0xBE,0x60,0xD5,0x5C};
+
+uint32_t RobotInfo::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->robot_id);
+          this->__isset.robot_id = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->robot_name);
+          this->__isset.robot_name = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          int32_t ecast0;
+          xfer += iprot->readI32(ecast0);
+          this->robot_status = (RobotStatus::type)ecast0;
+          this->__isset.robot_status = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t RobotInfo::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  xfer += oprot->writeStructBegin("RobotInfo");
+
+  xfer += oprot->writeFieldBegin("robot_id", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString(this->robot_id);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("robot_name", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString(this->robot_name);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("robot_status", ::apache::thrift::protocol::T_I32, 3);
+  xfer += oprot->writeI32((int32_t)this->robot_status);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(RobotInfo &a, RobotInfo &b) {
+  using ::std::swap;
+  swap(a.robot_id, b.robot_id);
+  swap(a.robot_name, b.robot_name);
+  swap(a.robot_status, b.robot_status);
+  swap(a.__isset, b.__isset);
+}
+
+const char* UserRobots::ascii_fingerprint = "2B34C86D2A169708F9BF5CF5C7C9D6F4";
+const uint8_t UserRobots::binary_fingerprint[16] = {0x2B,0x34,0xC8,0x6D,0x2A,0x16,0x97,0x08,0xF9,0xBF,0x5C,0xF5,0xC7,0xC9,0xD6,0xF4};
+
+uint32_t UserRobots::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->robots.clear();
+            uint32_t _size1;
+            ::apache::thrift::protocol::TType _etype4;
+            xfer += iprot->readListBegin(_etype4, _size1);
+            this->robots.resize(_size1);
+            uint32_t _i5;
+            for (_i5 = 0; _i5 < _size1; ++_i5)
+            {
+              xfer += this->robots[_i5].read(iprot);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.robots = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t UserRobots::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  xfer += oprot->writeStructBegin("UserRobots");
+
+  xfer += oprot->writeFieldBegin("robots", ::apache::thrift::protocol::T_LIST, 1);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->robots.size()));
+    std::vector<RobotInfo> ::const_iterator _iter6;
+    for (_iter6 = this->robots.begin(); _iter6 != this->robots.end(); ++_iter6)
+    {
+      xfer += (*_iter6).write(oprot);
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(UserRobots &a, UserRobots &b) {
+  using ::std::swap;
+  swap(a.robots, b.robots);
+  swap(a.__isset, b.__isset);
+}
 
 const char* CommandRequest::ascii_fingerprint = "4F8ABE747D9A2DF14F7E84DDBE60D55C";
 const uint8_t CommandRequest::binary_fingerprint[16] = {0x4F,0x8A,0xBE,0x74,0x7D,0x9A,0x2D,0xF1,0x4F,0x7E,0x84,0xDD,0xBE,0x60,0xD5,0x5C};
@@ -83,9 +350,9 @@ uint32_t CommandRequest::read(::apache::thrift::protocol::TProtocol* iprot) {
         break;
       case 3:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast0;
-          xfer += iprot->readI32(ecast0);
-          this->command = (Command::type)ecast0;
+          int32_t ecast7;
+          xfer += iprot->readI32(ecast7);
+          this->command = (Command::type)ecast7;
           this->__isset.command = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -157,9 +424,9 @@ uint32_t CommandResponse::read(::apache::thrift::protocol::TProtocol* iprot) {
     {
       case 1:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast1;
-          xfer += iprot->readI32(ecast1);
-          this->status = (CommandStatus::type)ecast1;
+          int32_t ecast8;
+          xfer += iprot->readI32(ecast8);
+          this->status = (CommandStatus::type)ecast8;
           this->__isset.status = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -193,6 +460,70 @@ uint32_t CommandResponse::write(::apache::thrift::protocol::TProtocol* oprot) co
 void swap(CommandResponse &a, CommandResponse &b) {
   using ::std::swap;
   swap(a.status, b.status);
+  swap(a.__isset, b.__isset);
+}
+
+const char* AccessDeniedException::ascii_fingerprint = "8BBB3D0C3B370CB38F2D1340BB79F0AA";
+const uint8_t AccessDeniedException::binary_fingerprint[16] = {0x8B,0xBB,0x3D,0x0C,0x3B,0x37,0x0C,0xB3,0x8F,0x2D,0x13,0x40,0xBB,0x79,0xF0,0xAA};
+
+uint32_t AccessDeniedException::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          int32_t ecast9;
+          xfer += iprot->readI32(ecast9);
+          this->error = (SecurityError::type)ecast9;
+          this->__isset.error = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t AccessDeniedException::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  xfer += oprot->writeStructBegin("AccessDeniedException");
+
+  xfer += oprot->writeFieldBegin("error", ::apache::thrift::protocol::T_I32, 1);
+  xfer += oprot->writeI32((int32_t)this->error);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(AccessDeniedException &a, AccessDeniedException &b) {
+  using ::std::swap;
+  swap(a.error, b.error);
   swap(a.__isset, b.__isset);
 }
 

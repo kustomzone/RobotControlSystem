@@ -18,27 +18,9 @@
 namespace cpp robot_control_system
 namespace java lib.robotics.rcs.server
 
-struct LoginRequest {
-  1: string robot_id,
-}
-
-struct LogoutRequest {
-  1: string robot_id,
-}
-
-enum RequestStatus {
-  OK = 1,
-  ERROR = 2,
-}
-
-struct RobotServiceResponse {
-  1: RequestStatus status,
-}
-
 /*
  * RobotServer service for robots.
  */
 service RobotService {
-  RobotServiceResponse Login(1:LoginRequest request),
-  RobotServiceResponse Logout(1:LogoutRequest request),
+  string Echo(1:string message);
 }

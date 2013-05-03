@@ -18,6 +18,27 @@
 namespace cpp robot_control_system
 namespace java lib.robotics.rcs.server
 
+struct UserLoginRequest {
+  1: string username,
+  2: string password,
+}
+
+enum RobotStatus {
+  OFFLINE = 1,
+  ONLINE = 2,
+}
+
+// Information about a robot.
+struct RobotInfo {
+  1: string robot_id,    // Unique robot ID.
+  2: string robot_name,  // Display name.
+  3: RobotStatus robot_status,
+}
+
+struct UserRobots {
+  1: list<RobotInfo> robots,
+}
+
 enum Command {
   STOP = 1,
   MOVE_FORWARD = 2,
@@ -36,8 +57,8 @@ struct CommandRequest {
 
 enum CommandStatus {
   OK = 1,
-  OFFLINE = 2,  // robot is offline
-  ERROR = 3,    // other error
+  ERROR = 2,    // other error
+  OFFLINE = 3,  // robot is offline
 }
 
 struct CommandResponse {
@@ -45,8 +66,48 @@ struct CommandResponse {
 }
 
 /*
- * RobotServer service for human users. Used to send commands to robots.
+ * Security error codes.
+ */
+enum SecurityError {
+  USER_NOT_LOGGED_IN = 1,  // User is not logged in.
+  INSUFFICIENT_RIGHTS = 2, // User has insufficent rights for action.
+}
+
+/*
+ * Thrown when a user does not have sufficient privileges to execute a method with
+ * the specified parameters.
+ */
+exception AccessDeniedException {
+  1: SecurityError error,
+}
+
+/*
+ * RobotServer service for human users.
+ * All UserService methods require that the user is autenticated via Login().
+ * UserService methods will fail 
  */
 service UserService {
-  CommandResponse SendCommand(1:CommandRequest request),
+  // Logs in the user. Must be called before any other method can be called.
+  // Returns true if the user has been successfully logged in.
+  // This method may fail due to an invalid username or password.
+  bool Login(1:UserLoginRequest request),
+
+  // Logs out the user. No other methods can be called once the user is logged out.
+  // Logged out users can login again.
+  void Logout(),
+
+  // Returns the status of the specified robot.
+  RobotStatus GetRobotStatus(1:string robot_id) throws (1:AccessDeniedException access_denied),
+
+  // Tries to updates the robot status to the new status and returns the new actual status after
+  // the operation.
+  RobotStatus SetRobotStatus(1:string robot_id, 2:RobotStatus new_status)
+      throws (1:AccessDeniedException access_denied),
+
+  // Returns a list of all robots to which the user has access.
+  UserRobots ListRobots() throws (1:AccessDeniedException access_denied),
+
+  // Sends a command to the specified robot.
+  CommandResponse SendCommand(1:CommandRequest request)
+      throws (1:AccessDeniedException access_denied),
 }

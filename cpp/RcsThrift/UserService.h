@@ -15,6 +15,11 @@ namespace robot_control_system {
 class UserServiceIf {
  public:
   virtual ~UserServiceIf() {}
+  virtual bool Login(const UserLoginRequest& request) = 0;
+  virtual void Logout() = 0;
+  virtual RobotStatus::type GetRobotStatus(const std::string& robot_id) = 0;
+  virtual RobotStatus::type SetRobotStatus(const std::string& robot_id, const RobotStatus::type new_status) = 0;
+  virtual void ListRobots(UserRobots& _return) = 0;
   virtual void SendCommand(CommandResponse& _return, const CommandRequest& request) = 0;
 };
 
@@ -45,9 +50,558 @@ class UserServiceIfSingletonFactory : virtual public UserServiceIfFactory {
 class UserServiceNull : virtual public UserServiceIf {
  public:
   virtual ~UserServiceNull() {}
+  bool Login(const UserLoginRequest& /* request */) {
+    bool _return = false;
+    return _return;
+  }
+  void Logout() {
+    return;
+  }
+  RobotStatus::type GetRobotStatus(const std::string& /* robot_id */) {
+    RobotStatus::type _return = (RobotStatus::type)0;
+    return _return;
+  }
+  RobotStatus::type SetRobotStatus(const std::string& /* robot_id */, const RobotStatus::type /* new_status */) {
+    RobotStatus::type _return = (RobotStatus::type)0;
+    return _return;
+  }
+  void ListRobots(UserRobots& /* _return */) {
+    return;
+  }
   void SendCommand(CommandResponse& /* _return */, const CommandRequest& /* request */) {
     return;
   }
+};
+
+typedef struct _UserService_Login_args__isset {
+  _UserService_Login_args__isset() : request(false) {}
+  bool request;
+} _UserService_Login_args__isset;
+
+class UserService_Login_args {
+ public:
+
+  UserService_Login_args() {
+  }
+
+  virtual ~UserService_Login_args() throw() {}
+
+  UserLoginRequest request;
+
+  _UserService_Login_args__isset __isset;
+
+  void __set_request(const UserLoginRequest& val) {
+    request = val;
+  }
+
+  bool operator == (const UserService_Login_args & rhs) const
+  {
+    if (!(request == rhs.request))
+      return false;
+    return true;
+  }
+  bool operator != (const UserService_Login_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const UserService_Login_args & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class UserService_Login_pargs {
+ public:
+
+
+  virtual ~UserService_Login_pargs() throw() {}
+
+  const UserLoginRequest* request;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _UserService_Login_result__isset {
+  _UserService_Login_result__isset() : success(false) {}
+  bool success;
+} _UserService_Login_result__isset;
+
+class UserService_Login_result {
+ public:
+
+  UserService_Login_result() : success(0) {
+  }
+
+  virtual ~UserService_Login_result() throw() {}
+
+  bool success;
+
+  _UserService_Login_result__isset __isset;
+
+  void __set_success(const bool val) {
+    success = val;
+  }
+
+  bool operator == (const UserService_Login_result & rhs) const
+  {
+    if (!(success == rhs.success))
+      return false;
+    return true;
+  }
+  bool operator != (const UserService_Login_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const UserService_Login_result & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _UserService_Login_presult__isset {
+  _UserService_Login_presult__isset() : success(false) {}
+  bool success;
+} _UserService_Login_presult__isset;
+
+class UserService_Login_presult {
+ public:
+
+
+  virtual ~UserService_Login_presult() throw() {}
+
+  bool* success;
+
+  _UserService_Login_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+
+class UserService_Logout_args {
+ public:
+
+  UserService_Logout_args() {
+  }
+
+  virtual ~UserService_Logout_args() throw() {}
+
+
+  bool operator == (const UserService_Logout_args & /* rhs */) const
+  {
+    return true;
+  }
+  bool operator != (const UserService_Logout_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const UserService_Logout_args & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class UserService_Logout_pargs {
+ public:
+
+
+  virtual ~UserService_Logout_pargs() throw() {}
+
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class UserService_Logout_result {
+ public:
+
+  UserService_Logout_result() {
+  }
+
+  virtual ~UserService_Logout_result() throw() {}
+
+
+  bool operator == (const UserService_Logout_result & /* rhs */) const
+  {
+    return true;
+  }
+  bool operator != (const UserService_Logout_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const UserService_Logout_result & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class UserService_Logout_presult {
+ public:
+
+
+  virtual ~UserService_Logout_presult() throw() {}
+
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+typedef struct _UserService_GetRobotStatus_args__isset {
+  _UserService_GetRobotStatus_args__isset() : robot_id(false) {}
+  bool robot_id;
+} _UserService_GetRobotStatus_args__isset;
+
+class UserService_GetRobotStatus_args {
+ public:
+
+  UserService_GetRobotStatus_args() : robot_id() {
+  }
+
+  virtual ~UserService_GetRobotStatus_args() throw() {}
+
+  std::string robot_id;
+
+  _UserService_GetRobotStatus_args__isset __isset;
+
+  void __set_robot_id(const std::string& val) {
+    robot_id = val;
+  }
+
+  bool operator == (const UserService_GetRobotStatus_args & rhs) const
+  {
+    if (!(robot_id == rhs.robot_id))
+      return false;
+    return true;
+  }
+  bool operator != (const UserService_GetRobotStatus_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const UserService_GetRobotStatus_args & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class UserService_GetRobotStatus_pargs {
+ public:
+
+
+  virtual ~UserService_GetRobotStatus_pargs() throw() {}
+
+  const std::string* robot_id;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _UserService_GetRobotStatus_result__isset {
+  _UserService_GetRobotStatus_result__isset() : success(false), access_denied(false) {}
+  bool success;
+  bool access_denied;
+} _UserService_GetRobotStatus_result__isset;
+
+class UserService_GetRobotStatus_result {
+ public:
+
+  UserService_GetRobotStatus_result() : success((RobotStatus::type)0) {
+  }
+
+  virtual ~UserService_GetRobotStatus_result() throw() {}
+
+  RobotStatus::type success;
+  AccessDeniedException access_denied;
+
+  _UserService_GetRobotStatus_result__isset __isset;
+
+  void __set_success(const RobotStatus::type val) {
+    success = val;
+  }
+
+  void __set_access_denied(const AccessDeniedException& val) {
+    access_denied = val;
+  }
+
+  bool operator == (const UserService_GetRobotStatus_result & rhs) const
+  {
+    if (!(success == rhs.success))
+      return false;
+    if (!(access_denied == rhs.access_denied))
+      return false;
+    return true;
+  }
+  bool operator != (const UserService_GetRobotStatus_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const UserService_GetRobotStatus_result & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _UserService_GetRobotStatus_presult__isset {
+  _UserService_GetRobotStatus_presult__isset() : success(false), access_denied(false) {}
+  bool success;
+  bool access_denied;
+} _UserService_GetRobotStatus_presult__isset;
+
+class UserService_GetRobotStatus_presult {
+ public:
+
+
+  virtual ~UserService_GetRobotStatus_presult() throw() {}
+
+  RobotStatus::type* success;
+  AccessDeniedException access_denied;
+
+  _UserService_GetRobotStatus_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+typedef struct _UserService_SetRobotStatus_args__isset {
+  _UserService_SetRobotStatus_args__isset() : robot_id(false), new_status(false) {}
+  bool robot_id;
+  bool new_status;
+} _UserService_SetRobotStatus_args__isset;
+
+class UserService_SetRobotStatus_args {
+ public:
+
+  UserService_SetRobotStatus_args() : robot_id(), new_status((RobotStatus::type)0) {
+  }
+
+  virtual ~UserService_SetRobotStatus_args() throw() {}
+
+  std::string robot_id;
+  RobotStatus::type new_status;
+
+  _UserService_SetRobotStatus_args__isset __isset;
+
+  void __set_robot_id(const std::string& val) {
+    robot_id = val;
+  }
+
+  void __set_new_status(const RobotStatus::type val) {
+    new_status = val;
+  }
+
+  bool operator == (const UserService_SetRobotStatus_args & rhs) const
+  {
+    if (!(robot_id == rhs.robot_id))
+      return false;
+    if (!(new_status == rhs.new_status))
+      return false;
+    return true;
+  }
+  bool operator != (const UserService_SetRobotStatus_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const UserService_SetRobotStatus_args & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class UserService_SetRobotStatus_pargs {
+ public:
+
+
+  virtual ~UserService_SetRobotStatus_pargs() throw() {}
+
+  const std::string* robot_id;
+  const RobotStatus::type* new_status;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _UserService_SetRobotStatus_result__isset {
+  _UserService_SetRobotStatus_result__isset() : success(false), access_denied(false) {}
+  bool success;
+  bool access_denied;
+} _UserService_SetRobotStatus_result__isset;
+
+class UserService_SetRobotStatus_result {
+ public:
+
+  UserService_SetRobotStatus_result() : success((RobotStatus::type)0) {
+  }
+
+  virtual ~UserService_SetRobotStatus_result() throw() {}
+
+  RobotStatus::type success;
+  AccessDeniedException access_denied;
+
+  _UserService_SetRobotStatus_result__isset __isset;
+
+  void __set_success(const RobotStatus::type val) {
+    success = val;
+  }
+
+  void __set_access_denied(const AccessDeniedException& val) {
+    access_denied = val;
+  }
+
+  bool operator == (const UserService_SetRobotStatus_result & rhs) const
+  {
+    if (!(success == rhs.success))
+      return false;
+    if (!(access_denied == rhs.access_denied))
+      return false;
+    return true;
+  }
+  bool operator != (const UserService_SetRobotStatus_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const UserService_SetRobotStatus_result & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _UserService_SetRobotStatus_presult__isset {
+  _UserService_SetRobotStatus_presult__isset() : success(false), access_denied(false) {}
+  bool success;
+  bool access_denied;
+} _UserService_SetRobotStatus_presult__isset;
+
+class UserService_SetRobotStatus_presult {
+ public:
+
+
+  virtual ~UserService_SetRobotStatus_presult() throw() {}
+
+  RobotStatus::type* success;
+  AccessDeniedException access_denied;
+
+  _UserService_SetRobotStatus_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+
+class UserService_ListRobots_args {
+ public:
+
+  UserService_ListRobots_args() {
+  }
+
+  virtual ~UserService_ListRobots_args() throw() {}
+
+
+  bool operator == (const UserService_ListRobots_args & /* rhs */) const
+  {
+    return true;
+  }
+  bool operator != (const UserService_ListRobots_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const UserService_ListRobots_args & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class UserService_ListRobots_pargs {
+ public:
+
+
+  virtual ~UserService_ListRobots_pargs() throw() {}
+
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _UserService_ListRobots_result__isset {
+  _UserService_ListRobots_result__isset() : success(false), access_denied(false) {}
+  bool success;
+  bool access_denied;
+} _UserService_ListRobots_result__isset;
+
+class UserService_ListRobots_result {
+ public:
+
+  UserService_ListRobots_result() {
+  }
+
+  virtual ~UserService_ListRobots_result() throw() {}
+
+  UserRobots success;
+  AccessDeniedException access_denied;
+
+  _UserService_ListRobots_result__isset __isset;
+
+  void __set_success(const UserRobots& val) {
+    success = val;
+  }
+
+  void __set_access_denied(const AccessDeniedException& val) {
+    access_denied = val;
+  }
+
+  bool operator == (const UserService_ListRobots_result & rhs) const
+  {
+    if (!(success == rhs.success))
+      return false;
+    if (!(access_denied == rhs.access_denied))
+      return false;
+    return true;
+  }
+  bool operator != (const UserService_ListRobots_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const UserService_ListRobots_result & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _UserService_ListRobots_presult__isset {
+  _UserService_ListRobots_presult__isset() : success(false), access_denied(false) {}
+  bool success;
+  bool access_denied;
+} _UserService_ListRobots_presult__isset;
+
+class UserService_ListRobots_presult {
+ public:
+
+
+  virtual ~UserService_ListRobots_presult() throw() {}
+
+  UserRobots* success;
+  AccessDeniedException access_denied;
+
+  _UserService_ListRobots_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
 };
 
 typedef struct _UserService_SendCommand_args__isset {
@@ -102,8 +656,9 @@ class UserService_SendCommand_pargs {
 };
 
 typedef struct _UserService_SendCommand_result__isset {
-  _UserService_SendCommand_result__isset() : success(false) {}
+  _UserService_SendCommand_result__isset() : success(false), access_denied(false) {}
   bool success;
+  bool access_denied;
 } _UserService_SendCommand_result__isset;
 
 class UserService_SendCommand_result {
@@ -115,6 +670,7 @@ class UserService_SendCommand_result {
   virtual ~UserService_SendCommand_result() throw() {}
 
   CommandResponse success;
+  AccessDeniedException access_denied;
 
   _UserService_SendCommand_result__isset __isset;
 
@@ -122,9 +678,15 @@ class UserService_SendCommand_result {
     success = val;
   }
 
+  void __set_access_denied(const AccessDeniedException& val) {
+    access_denied = val;
+  }
+
   bool operator == (const UserService_SendCommand_result & rhs) const
   {
     if (!(success == rhs.success))
+      return false;
+    if (!(access_denied == rhs.access_denied))
       return false;
     return true;
   }
@@ -140,8 +702,9 @@ class UserService_SendCommand_result {
 };
 
 typedef struct _UserService_SendCommand_presult__isset {
-  _UserService_SendCommand_presult__isset() : success(false) {}
+  _UserService_SendCommand_presult__isset() : success(false), access_denied(false) {}
   bool success;
+  bool access_denied;
 } _UserService_SendCommand_presult__isset;
 
 class UserService_SendCommand_presult {
@@ -151,6 +714,7 @@ class UserService_SendCommand_presult {
   virtual ~UserService_SendCommand_presult() throw() {}
 
   CommandResponse* success;
+  AccessDeniedException access_denied;
 
   _UserService_SendCommand_presult__isset __isset;
 
@@ -178,6 +742,21 @@ class UserServiceClient : virtual public UserServiceIf {
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> getOutputProtocol() {
     return poprot_;
   }
+  bool Login(const UserLoginRequest& request);
+  void send_Login(const UserLoginRequest& request);
+  bool recv_Login();
+  void Logout();
+  void send_Logout();
+  void recv_Logout();
+  RobotStatus::type GetRobotStatus(const std::string& robot_id);
+  void send_GetRobotStatus(const std::string& robot_id);
+  RobotStatus::type recv_GetRobotStatus();
+  RobotStatus::type SetRobotStatus(const std::string& robot_id, const RobotStatus::type new_status);
+  void send_SetRobotStatus(const std::string& robot_id, const RobotStatus::type new_status);
+  RobotStatus::type recv_SetRobotStatus();
+  void ListRobots(UserRobots& _return);
+  void send_ListRobots();
+  void recv_ListRobots(UserRobots& _return);
   void SendCommand(CommandResponse& _return, const CommandRequest& request);
   void send_SendCommand(const CommandRequest& request);
   void recv_SendCommand(CommandResponse& _return);
@@ -196,10 +775,20 @@ class UserServiceProcessor : public ::apache::thrift::TDispatchProcessor {
   typedef  void (UserServiceProcessor::*ProcessFunction)(int32_t, ::apache::thrift::protocol::TProtocol*, ::apache::thrift::protocol::TProtocol*, void*);
   typedef std::map<std::string, ProcessFunction> ProcessMap;
   ProcessMap processMap_;
+  void process_Login(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_Logout(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_GetRobotStatus(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_SetRobotStatus(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_ListRobots(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_SendCommand(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
  public:
   UserServiceProcessor(boost::shared_ptr<UserServiceIf> iface) :
     iface_(iface) {
+    processMap_["Login"] = &UserServiceProcessor::process_Login;
+    processMap_["Logout"] = &UserServiceProcessor::process_Logout;
+    processMap_["GetRobotStatus"] = &UserServiceProcessor::process_GetRobotStatus;
+    processMap_["SetRobotStatus"] = &UserServiceProcessor::process_SetRobotStatus;
+    processMap_["ListRobots"] = &UserServiceProcessor::process_ListRobots;
     processMap_["SendCommand"] = &UserServiceProcessor::process_SendCommand;
   }
 
@@ -229,6 +818,52 @@ class UserServiceMultiface : virtual public UserServiceIf {
     ifaces_.push_back(iface);
   }
  public:
+  bool Login(const UserLoginRequest& request) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->Login(request);
+    }
+    return ifaces_[i]->Login(request);
+  }
+
+  void Logout() {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->Logout();
+    }
+    ifaces_[i]->Logout();
+  }
+
+  RobotStatus::type GetRobotStatus(const std::string& robot_id) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->GetRobotStatus(robot_id);
+    }
+    return ifaces_[i]->GetRobotStatus(robot_id);
+  }
+
+  RobotStatus::type SetRobotStatus(const std::string& robot_id, const RobotStatus::type new_status) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->SetRobotStatus(robot_id, new_status);
+    }
+    return ifaces_[i]->SetRobotStatus(robot_id, new_status);
+  }
+
+  void ListRobots(UserRobots& _return) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->ListRobots(_return);
+    }
+    ifaces_[i]->ListRobots(_return);
+    return;
+  }
+
   void SendCommand(CommandResponse& _return, const CommandRequest& request) {
     size_t sz = ifaces_.size();
     size_t i = 0;

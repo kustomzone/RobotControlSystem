@@ -34,17 +34,13 @@ public class RobotService {
 
   public interface Iface {
 
-    public RobotServiceResponse Login(LoginRequest request) throws org.apache.thrift.TException;
-
-    public RobotServiceResponse Logout(LogoutRequest request) throws org.apache.thrift.TException;
+    public String Echo(String message) throws org.apache.thrift.TException;
 
   }
 
   public interface AsyncIface {
 
-    public void Login(LoginRequest request, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.Login_call> resultHandler) throws org.apache.thrift.TException;
-
-    public void Logout(LogoutRequest request, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.Logout_call> resultHandler) throws org.apache.thrift.TException;
+    public void Echo(String message, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.Echo_call> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -68,50 +64,27 @@ public class RobotService {
       super(iprot, oprot);
     }
 
-    public RobotServiceResponse Login(LoginRequest request) throws org.apache.thrift.TException
+    public String Echo(String message) throws org.apache.thrift.TException
     {
-      send_Login(request);
-      return recv_Login();
+      send_Echo(message);
+      return recv_Echo();
     }
 
-    public void send_Login(LoginRequest request) throws org.apache.thrift.TException
+    public void send_Echo(String message) throws org.apache.thrift.TException
     {
-      Login_args args = new Login_args();
-      args.setRequest(request);
-      sendBase("Login", args);
+      Echo_args args = new Echo_args();
+      args.setMessage(message);
+      sendBase("Echo", args);
     }
 
-    public RobotServiceResponse recv_Login() throws org.apache.thrift.TException
+    public String recv_Echo() throws org.apache.thrift.TException
     {
-      Login_result result = new Login_result();
-      receiveBase(result, "Login");
+      Echo_result result = new Echo_result();
+      receiveBase(result, "Echo");
       if (result.isSetSuccess()) {
         return result.success;
       }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "Login failed: unknown result");
-    }
-
-    public RobotServiceResponse Logout(LogoutRequest request) throws org.apache.thrift.TException
-    {
-      send_Logout(request);
-      return recv_Logout();
-    }
-
-    public void send_Logout(LogoutRequest request) throws org.apache.thrift.TException
-    {
-      Logout_args args = new Logout_args();
-      args.setRequest(request);
-      sendBase("Logout", args);
-    }
-
-    public RobotServiceResponse recv_Logout() throws org.apache.thrift.TException
-    {
-      Logout_result result = new Logout_result();
-      receiveBase(result, "Logout");
-      if (result.isSetSuccess()) {
-        return result.success;
-      }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "Logout failed: unknown result");
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "Echo failed: unknown result");
     }
 
   }
@@ -132,67 +105,35 @@ public class RobotService {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void Login(LoginRequest request, org.apache.thrift.async.AsyncMethodCallback<Login_call> resultHandler) throws org.apache.thrift.TException {
+    public void Echo(String message, org.apache.thrift.async.AsyncMethodCallback<Echo_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      Login_call method_call = new Login_call(request, resultHandler, this, ___protocolFactory, ___transport);
+      Echo_call method_call = new Echo_call(message, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class Login_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private LoginRequest request;
-      public Login_call(LoginRequest request, org.apache.thrift.async.AsyncMethodCallback<Login_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+    public static class Echo_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private String message;
+      public Echo_call(String message, org.apache.thrift.async.AsyncMethodCallback<Echo_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
-        this.request = request;
+        this.message = message;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("Login", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        Login_args args = new Login_args();
-        args.setRequest(request);
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("Echo", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        Echo_args args = new Echo_args();
+        args.setMessage(message);
         args.write(prot);
         prot.writeMessageEnd();
       }
 
-      public RobotServiceResponse getResult() throws org.apache.thrift.TException {
+      public String getResult() throws org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_Login();
-      }
-    }
-
-    public void Logout(LogoutRequest request, org.apache.thrift.async.AsyncMethodCallback<Logout_call> resultHandler) throws org.apache.thrift.TException {
-      checkReady();
-      Logout_call method_call = new Logout_call(request, resultHandler, this, ___protocolFactory, ___transport);
-      this.___currentMethod = method_call;
-      ___manager.call(method_call);
-    }
-
-    public static class Logout_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private LogoutRequest request;
-      public Logout_call(LogoutRequest request, org.apache.thrift.async.AsyncMethodCallback<Logout_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
-        super(client, protocolFactory, transport, resultHandler, false);
-        this.request = request;
-      }
-
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("Logout", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        Logout_args args = new Logout_args();
-        args.setRequest(request);
-        args.write(prot);
-        prot.writeMessageEnd();
-      }
-
-      public RobotServiceResponse getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
-        }
-        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
-        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_Logout();
+        return (new Client(prot)).recv_Echo();
       }
     }
 
@@ -209,69 +150,48 @@ public class RobotService {
     }
 
     private static <I extends Iface> Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> getProcessMap(Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
-      processMap.put("Login", new Login());
-      processMap.put("Logout", new Logout());
+      processMap.put("Echo", new Echo());
       return processMap;
     }
 
-    public static class Login<I extends Iface> extends org.apache.thrift.ProcessFunction<I, Login_args> {
-      public Login() {
-        super("Login");
+    public static class Echo<I extends Iface> extends org.apache.thrift.ProcessFunction<I, Echo_args> {
+      public Echo() {
+        super("Echo");
       }
 
-      public Login_args getEmptyArgsInstance() {
-        return new Login_args();
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public Login_result getResult(I iface, Login_args args) throws org.apache.thrift.TException {
-        Login_result result = new Login_result();
-        result.success = iface.Login(args.request);
-        return result;
-      }
-    }
-
-    public static class Logout<I extends Iface> extends org.apache.thrift.ProcessFunction<I, Logout_args> {
-      public Logout() {
-        super("Logout");
-      }
-
-      public Logout_args getEmptyArgsInstance() {
-        return new Logout_args();
+      public Echo_args getEmptyArgsInstance() {
+        return new Echo_args();
       }
 
       protected boolean isOneway() {
         return false;
       }
 
-      public Logout_result getResult(I iface, Logout_args args) throws org.apache.thrift.TException {
-        Logout_result result = new Logout_result();
-        result.success = iface.Logout(args.request);
+      public Echo_result getResult(I iface, Echo_args args) throws org.apache.thrift.TException {
+        Echo_result result = new Echo_result();
+        result.success = iface.Echo(args.message);
         return result;
       }
     }
 
   }
 
-  public static class Login_args implements org.apache.thrift.TBase<Login_args, Login_args._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Login_args");
+  public static class Echo_args implements org.apache.thrift.TBase<Echo_args, Echo_args._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Echo_args");
 
-    private static final org.apache.thrift.protocol.TField REQUEST_FIELD_DESC = new org.apache.thrift.protocol.TField("request", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+    private static final org.apache.thrift.protocol.TField MESSAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("message", org.apache.thrift.protocol.TType.STRING, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new Login_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new Login_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new Echo_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new Echo_argsTupleSchemeFactory());
     }
 
-    private LoginRequest request; // required
+    private String message; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      REQUEST((short)1, "request");
+      MESSAGE((short)1, "message");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -286,8 +206,8 @@ public class RobotService {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // REQUEST
-            return REQUEST;
+          case 1: // MESSAGE
+            return MESSAGE;
           default:
             return null;
         }
@@ -331,70 +251,70 @@ public class RobotService {
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.REQUEST, new org.apache.thrift.meta_data.FieldMetaData("request", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, LoginRequest.class)));
+      tmpMap.put(_Fields.MESSAGE, new org.apache.thrift.meta_data.FieldMetaData("message", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Login_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Echo_args.class, metaDataMap);
     }
 
-    public Login_args() {
+    public Echo_args() {
     }
 
-    public Login_args(
-      LoginRequest request)
+    public Echo_args(
+      String message)
     {
       this();
-      this.request = request;
+      this.message = message;
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public Login_args(Login_args other) {
-      if (other.isSetRequest()) {
-        this.request = new LoginRequest(other.request);
+    public Echo_args(Echo_args other) {
+      if (other.isSetMessage()) {
+        this.message = other.message;
       }
     }
 
-    public Login_args deepCopy() {
-      return new Login_args(this);
+    public Echo_args deepCopy() {
+      return new Echo_args(this);
     }
 
     @Override
     public void clear() {
-      this.request = null;
+      this.message = null;
     }
 
-    public LoginRequest getRequest() {
-      return this.request;
+    public String getMessage() {
+      return this.message;
     }
 
-    public void setRequest(LoginRequest request) {
-      this.request = request;
+    public void setMessage(String message) {
+      this.message = message;
     }
 
-    public void unsetRequest() {
-      this.request = null;
+    public void unsetMessage() {
+      this.message = null;
     }
 
-    /** Returns true if field request is set (has been assigned a value) and false otherwise */
-    public boolean isSetRequest() {
-      return this.request != null;
+    /** Returns true if field message is set (has been assigned a value) and false otherwise */
+    public boolean isSetMessage() {
+      return this.message != null;
     }
 
-    public void setRequestIsSet(boolean value) {
+    public void setMessageIsSet(boolean value) {
       if (!value) {
-        this.request = null;
+        this.message = null;
       }
     }
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
-      case REQUEST:
+      case MESSAGE:
         if (value == null) {
-          unsetRequest();
+          unsetMessage();
         } else {
-          setRequest((LoginRequest)value);
+          setMessage((String)value);
         }
         break;
 
@@ -403,8 +323,8 @@ public class RobotService {
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
-      case REQUEST:
-        return getRequest();
+      case MESSAGE:
+        return getMessage();
 
       }
       throw new IllegalStateException();
@@ -417,8 +337,8 @@ public class RobotService {
       }
 
       switch (field) {
-      case REQUEST:
-        return isSetRequest();
+      case MESSAGE:
+        return isSetMessage();
       }
       throw new IllegalStateException();
     }
@@ -427,21 +347,21 @@ public class RobotService {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof Login_args)
-        return this.equals((Login_args)that);
+      if (that instanceof Echo_args)
+        return this.equals((Echo_args)that);
       return false;
     }
 
-    public boolean equals(Login_args that) {
+    public boolean equals(Echo_args that) {
       if (that == null)
         return false;
 
-      boolean this_present_request = true && this.isSetRequest();
-      boolean that_present_request = true && that.isSetRequest();
-      if (this_present_request || that_present_request) {
-        if (!(this_present_request && that_present_request))
+      boolean this_present_message = true && this.isSetMessage();
+      boolean that_present_message = true && that.isSetMessage();
+      if (this_present_message || that_present_message) {
+        if (!(this_present_message && that_present_message))
           return false;
-        if (!this.request.equals(that.request))
+        if (!this.message.equals(that.message))
           return false;
       }
 
@@ -453,20 +373,20 @@ public class RobotService {
       return 0;
     }
 
-    public int compareTo(Login_args other) {
+    public int compareTo(Echo_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      Login_args typedOther = (Login_args)other;
+      Echo_args typedOther = (Echo_args)other;
 
-      lastComparison = Boolean.valueOf(isSetRequest()).compareTo(typedOther.isSetRequest());
+      lastComparison = Boolean.valueOf(isSetMessage()).compareTo(typedOther.isSetMessage());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetRequest()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.request, typedOther.request);
+      if (isSetMessage()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.message, typedOther.message);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -488,14 +408,14 @@ public class RobotService {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("Login_args(");
+      StringBuilder sb = new StringBuilder("Echo_args(");
       boolean first = true;
 
-      sb.append("request:");
-      if (this.request == null) {
+      sb.append("message:");
+      if (this.message == null) {
         sb.append("null");
       } else {
-        sb.append(this.request);
+        sb.append(this.message);
       }
       first = false;
       sb.append(")");
@@ -505,9 +425,6 @@ public class RobotService {
     public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
-      if (request != null) {
-        request.validate();
-      }
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -526,15 +443,15 @@ public class RobotService {
       }
     }
 
-    private static class Login_argsStandardSchemeFactory implements SchemeFactory {
-      public Login_argsStandardScheme getScheme() {
-        return new Login_argsStandardScheme();
+    private static class Echo_argsStandardSchemeFactory implements SchemeFactory {
+      public Echo_argsStandardScheme getScheme() {
+        return new Echo_argsStandardScheme();
       }
     }
 
-    private static class Login_argsStandardScheme extends StandardScheme<Login_args> {
+    private static class Echo_argsStandardScheme extends StandardScheme<Echo_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, Login_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, Echo_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -544,11 +461,10 @@ public class RobotService {
             break;
           }
           switch (schemeField.id) {
-            case 1: // REQUEST
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.request = new LoginRequest();
-                struct.request.read(iprot);
-                struct.setRequestIsSet(true);
+            case 1: // MESSAGE
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.message = iprot.readString();
+                struct.setMessageIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -562,13 +478,13 @@ public class RobotService {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, Login_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, Echo_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.request != null) {
-          oprot.writeFieldBegin(REQUEST_FIELD_DESC);
-          struct.request.write(oprot);
+        if (struct.message != null) {
+          oprot.writeFieldBegin(MESSAGE_FIELD_DESC);
+          oprot.writeString(struct.message);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -577,53 +493,52 @@ public class RobotService {
 
     }
 
-    private static class Login_argsTupleSchemeFactory implements SchemeFactory {
-      public Login_argsTupleScheme getScheme() {
-        return new Login_argsTupleScheme();
+    private static class Echo_argsTupleSchemeFactory implements SchemeFactory {
+      public Echo_argsTupleScheme getScheme() {
+        return new Echo_argsTupleScheme();
       }
     }
 
-    private static class Login_argsTupleScheme extends TupleScheme<Login_args> {
+    private static class Echo_argsTupleScheme extends TupleScheme<Echo_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, Login_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, Echo_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
-        if (struct.isSetRequest()) {
+        if (struct.isSetMessage()) {
           optionals.set(0);
         }
         oprot.writeBitSet(optionals, 1);
-        if (struct.isSetRequest()) {
-          struct.request.write(oprot);
+        if (struct.isSetMessage()) {
+          oprot.writeString(struct.message);
         }
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, Login_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, Echo_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
-          struct.request = new LoginRequest();
-          struct.request.read(iprot);
-          struct.setRequestIsSet(true);
+          struct.message = iprot.readString();
+          struct.setMessageIsSet(true);
         }
       }
     }
 
   }
 
-  public static class Login_result implements org.apache.thrift.TBase<Login_result, Login_result._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Login_result");
+  public static class Echo_result implements org.apache.thrift.TBase<Echo_result, Echo_result._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Echo_result");
 
-    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRING, (short)0);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new Login_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new Login_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new Echo_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new Echo_resultTupleSchemeFactory());
     }
 
-    private RobotServiceResponse success; // required
+    private String success; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -688,16 +603,16 @@ public class RobotService {
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, RobotServiceResponse.class)));
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Login_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Echo_result.class, metaDataMap);
     }
 
-    public Login_result() {
+    public Echo_result() {
     }
 
-    public Login_result(
-      RobotServiceResponse success)
+    public Echo_result(
+      String success)
     {
       this();
       this.success = success;
@@ -706,14 +621,14 @@ public class RobotService {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public Login_result(Login_result other) {
+    public Echo_result(Echo_result other) {
       if (other.isSetSuccess()) {
-        this.success = new RobotServiceResponse(other.success);
+        this.success = other.success;
       }
     }
 
-    public Login_result deepCopy() {
-      return new Login_result(this);
+    public Echo_result deepCopy() {
+      return new Echo_result(this);
     }
 
     @Override
@@ -721,11 +636,11 @@ public class RobotService {
       this.success = null;
     }
 
-    public RobotServiceResponse getSuccess() {
+    public String getSuccess() {
       return this.success;
     }
 
-    public void setSuccess(RobotServiceResponse success) {
+    public void setSuccess(String success) {
       this.success = success;
     }
 
@@ -750,7 +665,7 @@ public class RobotService {
         if (value == null) {
           unsetSuccess();
         } else {
-          setSuccess((RobotServiceResponse)value);
+          setSuccess((String)value);
         }
         break;
 
@@ -783,12 +698,12 @@ public class RobotService {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof Login_result)
-        return this.equals((Login_result)that);
+      if (that instanceof Echo_result)
+        return this.equals((Echo_result)that);
       return false;
     }
 
-    public boolean equals(Login_result that) {
+    public boolean equals(Echo_result that) {
       if (that == null)
         return false;
 
@@ -809,13 +724,13 @@ public class RobotService {
       return 0;
     }
 
-    public int compareTo(Login_result other) {
+    public int compareTo(Echo_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      Login_result typedOther = (Login_result)other;
+      Echo_result typedOther = (Echo_result)other;
 
       lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(typedOther.isSetSuccess());
       if (lastComparison != 0) {
@@ -844,7 +759,7 @@ public class RobotService {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("Login_result(");
+      StringBuilder sb = new StringBuilder("Echo_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -861,9 +776,6 @@ public class RobotService {
     public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
-      if (success != null) {
-        success.validate();
-      }
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -882,15 +794,15 @@ public class RobotService {
       }
     }
 
-    private static class Login_resultStandardSchemeFactory implements SchemeFactory {
-      public Login_resultStandardScheme getScheme() {
-        return new Login_resultStandardScheme();
+    private static class Echo_resultStandardSchemeFactory implements SchemeFactory {
+      public Echo_resultStandardScheme getScheme() {
+        return new Echo_resultStandardScheme();
       }
     }
 
-    private static class Login_resultStandardScheme extends StandardScheme<Login_result> {
+    private static class Echo_resultStandardScheme extends StandardScheme<Echo_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, Login_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, Echo_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -901,9 +813,8 @@ public class RobotService {
           }
           switch (schemeField.id) {
             case 0: // SUCCESS
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.success = new RobotServiceResponse();
-                struct.success.read(iprot);
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.success = iprot.readString();
                 struct.setSuccessIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -918,13 +829,13 @@ public class RobotService {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, Login_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, Echo_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
-          struct.success.write(oprot);
+          oprot.writeString(struct.success);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -933,16 +844,16 @@ public class RobotService {
 
     }
 
-    private static class Login_resultTupleSchemeFactory implements SchemeFactory {
-      public Login_resultTupleScheme getScheme() {
-        return new Login_resultTupleScheme();
+    private static class Echo_resultTupleSchemeFactory implements SchemeFactory {
+      public Echo_resultTupleScheme getScheme() {
+        return new Echo_resultTupleScheme();
       }
     }
 
-    private static class Login_resultTupleScheme extends TupleScheme<Login_result> {
+    private static class Echo_resultTupleScheme extends TupleScheme<Echo_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, Login_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, Echo_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -950,729 +861,16 @@ public class RobotService {
         }
         oprot.writeBitSet(optionals, 1);
         if (struct.isSetSuccess()) {
-          struct.success.write(oprot);
+          oprot.writeString(struct.success);
         }
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, Login_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, Echo_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
-          struct.success = new RobotServiceResponse();
-          struct.success.read(iprot);
-          struct.setSuccessIsSet(true);
-        }
-      }
-    }
-
-  }
-
-  public static class Logout_args implements org.apache.thrift.TBase<Logout_args, Logout_args._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Logout_args");
-
-    private static final org.apache.thrift.protocol.TField REQUEST_FIELD_DESC = new org.apache.thrift.protocol.TField("request", org.apache.thrift.protocol.TType.STRUCT, (short)1);
-
-    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
-    static {
-      schemes.put(StandardScheme.class, new Logout_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new Logout_argsTupleSchemeFactory());
-    }
-
-    private LogoutRequest request; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      REQUEST((short)1, "request");
-
-      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
-
-      static {
-        for (_Fields field : EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 1: // REQUEST
-            return REQUEST;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final String _fieldName;
-
-      _Fields(short thriftId, String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.REQUEST, new org.apache.thrift.meta_data.FieldMetaData("request", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, LogoutRequest.class)));
-      metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Logout_args.class, metaDataMap);
-    }
-
-    public Logout_args() {
-    }
-
-    public Logout_args(
-      LogoutRequest request)
-    {
-      this();
-      this.request = request;
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public Logout_args(Logout_args other) {
-      if (other.isSetRequest()) {
-        this.request = new LogoutRequest(other.request);
-      }
-    }
-
-    public Logout_args deepCopy() {
-      return new Logout_args(this);
-    }
-
-    @Override
-    public void clear() {
-      this.request = null;
-    }
-
-    public LogoutRequest getRequest() {
-      return this.request;
-    }
-
-    public void setRequest(LogoutRequest request) {
-      this.request = request;
-    }
-
-    public void unsetRequest() {
-      this.request = null;
-    }
-
-    /** Returns true if field request is set (has been assigned a value) and false otherwise */
-    public boolean isSetRequest() {
-      return this.request != null;
-    }
-
-    public void setRequestIsSet(boolean value) {
-      if (!value) {
-        this.request = null;
-      }
-    }
-
-    public void setFieldValue(_Fields field, Object value) {
-      switch (field) {
-      case REQUEST:
-        if (value == null) {
-          unsetRequest();
-        } else {
-          setRequest((LogoutRequest)value);
-        }
-        break;
-
-      }
-    }
-
-    public Object getFieldValue(_Fields field) {
-      switch (field) {
-      case REQUEST:
-        return getRequest();
-
-      }
-      throw new IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new IllegalArgumentException();
-      }
-
-      switch (field) {
-      case REQUEST:
-        return isSetRequest();
-      }
-      throw new IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof Logout_args)
-        return this.equals((Logout_args)that);
-      return false;
-    }
-
-    public boolean equals(Logout_args that) {
-      if (that == null)
-        return false;
-
-      boolean this_present_request = true && this.isSetRequest();
-      boolean that_present_request = true && that.isSetRequest();
-      if (this_present_request || that_present_request) {
-        if (!(this_present_request && that_present_request))
-          return false;
-        if (!this.request.equals(that.request))
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      return 0;
-    }
-
-    public int compareTo(Logout_args other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-      Logout_args typedOther = (Logout_args)other;
-
-      lastComparison = Boolean.valueOf(isSetRequest()).compareTo(typedOther.isSetRequest());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetRequest()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.request, typedOther.request);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
-    }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("Logout_args(");
-      boolean first = true;
-
-      sb.append("request:");
-      if (this.request == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.request);
-      }
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      // check for sub-struct validity
-      if (request != null) {
-        request.validate();
-      }
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class Logout_argsStandardSchemeFactory implements SchemeFactory {
-      public Logout_argsStandardScheme getScheme() {
-        return new Logout_argsStandardScheme();
-      }
-    }
-
-    private static class Logout_argsStandardScheme extends StandardScheme<Logout_args> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, Logout_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 1: // REQUEST
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.request = new LogoutRequest();
-                struct.request.read(iprot);
-                struct.setRequestIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, Logout_args struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.request != null) {
-          oprot.writeFieldBegin(REQUEST_FIELD_DESC);
-          struct.request.write(oprot);
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class Logout_argsTupleSchemeFactory implements SchemeFactory {
-      public Logout_argsTupleScheme getScheme() {
-        return new Logout_argsTupleScheme();
-      }
-    }
-
-    private static class Logout_argsTupleScheme extends TupleScheme<Logout_args> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, Logout_args struct) throws org.apache.thrift.TException {
-        TTupleProtocol oprot = (TTupleProtocol) prot;
-        BitSet optionals = new BitSet();
-        if (struct.isSetRequest()) {
-          optionals.set(0);
-        }
-        oprot.writeBitSet(optionals, 1);
-        if (struct.isSetRequest()) {
-          struct.request.write(oprot);
-        }
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, Logout_args struct) throws org.apache.thrift.TException {
-        TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
-        if (incoming.get(0)) {
-          struct.request = new LogoutRequest();
-          struct.request.read(iprot);
-          struct.setRequestIsSet(true);
-        }
-      }
-    }
-
-  }
-
-  public static class Logout_result implements org.apache.thrift.TBase<Logout_result, Logout_result._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Logout_result");
-
-    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
-
-    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
-    static {
-      schemes.put(StandardScheme.class, new Logout_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new Logout_resultTupleSchemeFactory());
-    }
-
-    private RobotServiceResponse success; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
-
-      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
-
-      static {
-        for (_Fields field : EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 0: // SUCCESS
-            return SUCCESS;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final String _fieldName;
-
-      _Fields(short thriftId, String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, RobotServiceResponse.class)));
-      metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Logout_result.class, metaDataMap);
-    }
-
-    public Logout_result() {
-    }
-
-    public Logout_result(
-      RobotServiceResponse success)
-    {
-      this();
-      this.success = success;
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public Logout_result(Logout_result other) {
-      if (other.isSetSuccess()) {
-        this.success = new RobotServiceResponse(other.success);
-      }
-    }
-
-    public Logout_result deepCopy() {
-      return new Logout_result(this);
-    }
-
-    @Override
-    public void clear() {
-      this.success = null;
-    }
-
-    public RobotServiceResponse getSuccess() {
-      return this.success;
-    }
-
-    public void setSuccess(RobotServiceResponse success) {
-      this.success = success;
-    }
-
-    public void unsetSuccess() {
-      this.success = null;
-    }
-
-    /** Returns true if field success is set (has been assigned a value) and false otherwise */
-    public boolean isSetSuccess() {
-      return this.success != null;
-    }
-
-    public void setSuccessIsSet(boolean value) {
-      if (!value) {
-        this.success = null;
-      }
-    }
-
-    public void setFieldValue(_Fields field, Object value) {
-      switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((RobotServiceResponse)value);
-        }
-        break;
-
-      }
-    }
-
-    public Object getFieldValue(_Fields field) {
-      switch (field) {
-      case SUCCESS:
-        return getSuccess();
-
-      }
-      throw new IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new IllegalArgumentException();
-      }
-
-      switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
-      }
-      throw new IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof Logout_result)
-        return this.equals((Logout_result)that);
-      return false;
-    }
-
-    public boolean equals(Logout_result that) {
-      if (that == null)
-        return false;
-
-      boolean this_present_success = true && this.isSetSuccess();
-      boolean that_present_success = true && that.isSetSuccess();
-      if (this_present_success || that_present_success) {
-        if (!(this_present_success && that_present_success))
-          return false;
-        if (!this.success.equals(that.success))
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      return 0;
-    }
-
-    public int compareTo(Logout_result other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-      Logout_result typedOther = (Logout_result)other;
-
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(typedOther.isSetSuccess());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetSuccess()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, typedOther.success);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
-      }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("Logout_result(");
-      boolean first = true;
-
-      sb.append("success:");
-      if (this.success == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.success);
-      }
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      // check for sub-struct validity
-      if (success != null) {
-        success.validate();
-      }
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class Logout_resultStandardSchemeFactory implements SchemeFactory {
-      public Logout_resultStandardScheme getScheme() {
-        return new Logout_resultStandardScheme();
-      }
-    }
-
-    private static class Logout_resultStandardScheme extends StandardScheme<Logout_result> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, Logout_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 0: // SUCCESS
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.success = new RobotServiceResponse();
-                struct.success.read(iprot);
-                struct.setSuccessIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, Logout_result struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.success != null) {
-          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
-          struct.success.write(oprot);
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class Logout_resultTupleSchemeFactory implements SchemeFactory {
-      public Logout_resultTupleScheme getScheme() {
-        return new Logout_resultTupleScheme();
-      }
-    }
-
-    private static class Logout_resultTupleScheme extends TupleScheme<Logout_result> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, Logout_result struct) throws org.apache.thrift.TException {
-        TTupleProtocol oprot = (TTupleProtocol) prot;
-        BitSet optionals = new BitSet();
-        if (struct.isSetSuccess()) {
-          optionals.set(0);
-        }
-        oprot.writeBitSet(optionals, 1);
-        if (struct.isSetSuccess()) {
-          struct.success.write(oprot);
-        }
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, Logout_result struct) throws org.apache.thrift.TException {
-        TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
-        if (incoming.get(0)) {
-          struct.success = new RobotServiceResponse();
-          struct.success.read(iprot);
+          struct.success = iprot.readString();
           struct.setSuccessIsSet(true);
         }
       }

@@ -13,8 +13,8 @@ import org.apache.thrift.TEnum;
 
 public enum CommandStatus implements org.apache.thrift.TEnum {
   OK(1),
-  OFFLINE(2),
-  ERROR(3);
+  ERROR(2),
+  OFFLINE(3);
 
   private final int value;
 
@@ -38,9 +38,9 @@ public enum CommandStatus implements org.apache.thrift.TEnum {
       case 1:
         return OK;
       case 2:
-        return OFFLINE;
-      case 3:
         return ERROR;
+      case 3:
+        return OFFLINE;
       default:
         return null;
     }

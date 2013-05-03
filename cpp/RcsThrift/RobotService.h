@@ -15,8 +15,7 @@ namespace robot_control_system {
 class RobotServiceIf {
  public:
   virtual ~RobotServiceIf() {}
-  virtual void Login(RobotServiceResponse& _return, const LoginRequest& request) = 0;
-  virtual void Logout(RobotServiceResponse& _return, const LogoutRequest& request) = 0;
+  virtual void Echo(std::string& _return, const std::string& message) = 0;
 };
 
 class RobotServiceIfFactory {
@@ -46,46 +45,43 @@ class RobotServiceIfSingletonFactory : virtual public RobotServiceIfFactory {
 class RobotServiceNull : virtual public RobotServiceIf {
  public:
   virtual ~RobotServiceNull() {}
-  void Login(RobotServiceResponse& /* _return */, const LoginRequest& /* request */) {
-    return;
-  }
-  void Logout(RobotServiceResponse& /* _return */, const LogoutRequest& /* request */) {
+  void Echo(std::string& /* _return */, const std::string& /* message */) {
     return;
   }
 };
 
-typedef struct _RobotService_Login_args__isset {
-  _RobotService_Login_args__isset() : request(false) {}
-  bool request;
-} _RobotService_Login_args__isset;
+typedef struct _RobotService_Echo_args__isset {
+  _RobotService_Echo_args__isset() : message(false) {}
+  bool message;
+} _RobotService_Echo_args__isset;
 
-class RobotService_Login_args {
+class RobotService_Echo_args {
  public:
 
-  RobotService_Login_args() {
+  RobotService_Echo_args() : message() {
   }
 
-  virtual ~RobotService_Login_args() throw() {}
+  virtual ~RobotService_Echo_args() throw() {}
 
-  LoginRequest request;
+  std::string message;
 
-  _RobotService_Login_args__isset __isset;
+  _RobotService_Echo_args__isset __isset;
 
-  void __set_request(const LoginRequest& val) {
-    request = val;
+  void __set_message(const std::string& val) {
+    message = val;
   }
 
-  bool operator == (const RobotService_Login_args & rhs) const
+  bool operator == (const RobotService_Echo_args & rhs) const
   {
-    if (!(request == rhs.request))
+    if (!(message == rhs.message))
       return false;
     return true;
   }
-  bool operator != (const RobotService_Login_args &rhs) const {
+  bool operator != (const RobotService_Echo_args &rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const RobotService_Login_args & ) const;
+  bool operator < (const RobotService_Echo_args & ) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
@@ -93,178 +89,70 @@ class RobotService_Login_args {
 };
 
 
-class RobotService_Login_pargs {
+class RobotService_Echo_pargs {
  public:
 
 
-  virtual ~RobotService_Login_pargs() throw() {}
+  virtual ~RobotService_Echo_pargs() throw() {}
 
-  const LoginRequest* request;
+  const std::string* message;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
 };
 
-typedef struct _RobotService_Login_result__isset {
-  _RobotService_Login_result__isset() : success(false) {}
+typedef struct _RobotService_Echo_result__isset {
+  _RobotService_Echo_result__isset() : success(false) {}
   bool success;
-} _RobotService_Login_result__isset;
+} _RobotService_Echo_result__isset;
 
-class RobotService_Login_result {
+class RobotService_Echo_result {
  public:
 
-  RobotService_Login_result() {
+  RobotService_Echo_result() : success() {
   }
 
-  virtual ~RobotService_Login_result() throw() {}
+  virtual ~RobotService_Echo_result() throw() {}
 
-  RobotServiceResponse success;
+  std::string success;
 
-  _RobotService_Login_result__isset __isset;
+  _RobotService_Echo_result__isset __isset;
 
-  void __set_success(const RobotServiceResponse& val) {
+  void __set_success(const std::string& val) {
     success = val;
   }
 
-  bool operator == (const RobotService_Login_result & rhs) const
+  bool operator == (const RobotService_Echo_result & rhs) const
   {
     if (!(success == rhs.success))
       return false;
     return true;
   }
-  bool operator != (const RobotService_Login_result &rhs) const {
+  bool operator != (const RobotService_Echo_result &rhs) const {
     return !(*this == rhs);
   }
 
-  bool operator < (const RobotService_Login_result & ) const;
+  bool operator < (const RobotService_Echo_result & ) const;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
 };
 
-typedef struct _RobotService_Login_presult__isset {
-  _RobotService_Login_presult__isset() : success(false) {}
+typedef struct _RobotService_Echo_presult__isset {
+  _RobotService_Echo_presult__isset() : success(false) {}
   bool success;
-} _RobotService_Login_presult__isset;
+} _RobotService_Echo_presult__isset;
 
-class RobotService_Login_presult {
+class RobotService_Echo_presult {
  public:
 
 
-  virtual ~RobotService_Login_presult() throw() {}
+  virtual ~RobotService_Echo_presult() throw() {}
 
-  RobotServiceResponse* success;
+  std::string* success;
 
-  _RobotService_Login_presult__isset __isset;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-
-};
-
-typedef struct _RobotService_Logout_args__isset {
-  _RobotService_Logout_args__isset() : request(false) {}
-  bool request;
-} _RobotService_Logout_args__isset;
-
-class RobotService_Logout_args {
- public:
-
-  RobotService_Logout_args() {
-  }
-
-  virtual ~RobotService_Logout_args() throw() {}
-
-  LogoutRequest request;
-
-  _RobotService_Logout_args__isset __isset;
-
-  void __set_request(const LogoutRequest& val) {
-    request = val;
-  }
-
-  bool operator == (const RobotService_Logout_args & rhs) const
-  {
-    if (!(request == rhs.request))
-      return false;
-    return true;
-  }
-  bool operator != (const RobotService_Logout_args &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const RobotService_Logout_args & ) const;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-};
-
-
-class RobotService_Logout_pargs {
- public:
-
-
-  virtual ~RobotService_Logout_pargs() throw() {}
-
-  const LogoutRequest* request;
-
-  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-};
-
-typedef struct _RobotService_Logout_result__isset {
-  _RobotService_Logout_result__isset() : success(false) {}
-  bool success;
-} _RobotService_Logout_result__isset;
-
-class RobotService_Logout_result {
- public:
-
-  RobotService_Logout_result() {
-  }
-
-  virtual ~RobotService_Logout_result() throw() {}
-
-  RobotServiceResponse success;
-
-  _RobotService_Logout_result__isset __isset;
-
-  void __set_success(const RobotServiceResponse& val) {
-    success = val;
-  }
-
-  bool operator == (const RobotService_Logout_result & rhs) const
-  {
-    if (!(success == rhs.success))
-      return false;
-    return true;
-  }
-  bool operator != (const RobotService_Logout_result &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const RobotService_Logout_result & ) const;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-};
-
-typedef struct _RobotService_Logout_presult__isset {
-  _RobotService_Logout_presult__isset() : success(false) {}
-  bool success;
-} _RobotService_Logout_presult__isset;
-
-class RobotService_Logout_presult {
- public:
-
-
-  virtual ~RobotService_Logout_presult() throw() {}
-
-  RobotServiceResponse* success;
-
-  _RobotService_Logout_presult__isset __isset;
+  _RobotService_Echo_presult__isset __isset;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
 
@@ -290,12 +178,9 @@ class RobotServiceClient : virtual public RobotServiceIf {
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> getOutputProtocol() {
     return poprot_;
   }
-  void Login(RobotServiceResponse& _return, const LoginRequest& request);
-  void send_Login(const LoginRequest& request);
-  void recv_Login(RobotServiceResponse& _return);
-  void Logout(RobotServiceResponse& _return, const LogoutRequest& request);
-  void send_Logout(const LogoutRequest& request);
-  void recv_Logout(RobotServiceResponse& _return);
+  void Echo(std::string& _return, const std::string& message);
+  void send_Echo(const std::string& message);
+  void recv_Echo(std::string& _return);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -311,13 +196,11 @@ class RobotServiceProcessor : public ::apache::thrift::TDispatchProcessor {
   typedef  void (RobotServiceProcessor::*ProcessFunction)(int32_t, ::apache::thrift::protocol::TProtocol*, ::apache::thrift::protocol::TProtocol*, void*);
   typedef std::map<std::string, ProcessFunction> ProcessMap;
   ProcessMap processMap_;
-  void process_Login(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
-  void process_Logout(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_Echo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
  public:
   RobotServiceProcessor(boost::shared_ptr<RobotServiceIf> iface) :
     iface_(iface) {
-    processMap_["Login"] = &RobotServiceProcessor::process_Login;
-    processMap_["Logout"] = &RobotServiceProcessor::process_Logout;
+    processMap_["Echo"] = &RobotServiceProcessor::process_Echo;
   }
 
   virtual ~RobotServiceProcessor() {}
@@ -346,23 +229,13 @@ class RobotServiceMultiface : virtual public RobotServiceIf {
     ifaces_.push_back(iface);
   }
  public:
-  void Login(RobotServiceResponse& _return, const LoginRequest& request) {
+  void Echo(std::string& _return, const std::string& message) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->Login(_return, request);
+      ifaces_[i]->Echo(_return, message);
     }
-    ifaces_[i]->Login(_return, request);
-    return;
-  }
-
-  void Logout(RobotServiceResponse& _return, const LogoutRequest& request) {
-    size_t sz = ifaces_.size();
-    size_t i = 0;
-    for (; i < (sz - 1); ++i) {
-      ifaces_[i]->Logout(_return, request);
-    }
-    ifaces_[i]->Logout(_return, request);
+    ifaces_[i]->Echo(_return, message);
     return;
   }
 
