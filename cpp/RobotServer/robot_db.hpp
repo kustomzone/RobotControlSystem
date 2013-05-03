@@ -30,6 +30,7 @@ using ::std::string;
 using ::std::unordered_map;
 
 class Robot;
+class UsersRobotsDb;
 
 /*
  * Database of robots.
@@ -40,15 +41,23 @@ class RobotDB : public Singleton<RobotDB> {
   public:
     virtual ~RobotDB();
 
+    // Initializes the local RobotDB using the specified user-robot SQL database.
+    // Caller maintains ownership of the pointer.
+    void Init(const UsersRobotsDb* users_robots_db);
+
     // Adds a robot with the given name and id to the database. Each robot must have a
     // unique id.
     // If the robot does not already exist in the database creates a new Robot instance.
     // Returns a pointer to the robot. Maintains ownership of the robot.
-    static Robot* AddRobot(const string& robot_id, const string& robot_name);
+    Robot* AddRobot(const string& robot_id, const string& robot_name);
 
     // Returns a pointer to the robot with the specified id or null if no such robot
     // exists.
-    static Robot* GetRobot(const string& robot_id);
+    Robot* GetRobot(const string& robot_id) const;
+
+    const UsersRobotsDb* users_robots_db() const {
+        return users_robots_db_;
+    }
 
   private:
     friend class Singleton;
@@ -56,11 +65,8 @@ class RobotDB : public Singleton<RobotDB> {
     // Singleton.
     RobotDB();
 
-    Robot* AddRobotImpl(const string& robot_id, const string& robot_name);
-
-    Robot* GetRobotImpl(const string& robot_id) const;
-
     unordered_map<string, Robot*> robots_;
+    const UsersRobotsDb* users_robots_db_;
 };
 
 }

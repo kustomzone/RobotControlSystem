@@ -18,6 +18,8 @@
 #ifndef ROBOT_CONTROL_SYSTEM_ROBOT_SERVICE_HPP_
 #define ROBOT_CONTROL_SYSTEM_ROBOT_SERVICE_HPP_
 
+#include <string>
+
 #include "macros.hpp"
 #include "thrift_server.hpp"
 #include "../RcsThrift/RobotService.h"
@@ -34,9 +36,8 @@ class RobotService : public RobotServiceIf {
   public:
     RobotService();
 
-    virtual void Login(RobotServiceResponse& response, const LoginRequest& request);
-
-    virtual void Logout(RobotServiceResponse& response, const LogoutRequest& request);
+    // Experimental method. Will be removed.
+    virtual void Echo(std::string& response, const std::string& message);
 };
 
 DEFINE_THRIFT_SERVER(RobotService);

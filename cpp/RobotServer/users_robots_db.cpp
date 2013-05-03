@@ -17,6 +17,9 @@
 
 #include "users_robots_db.hpp"
 
+#include <utility>
+
+#include "robot.hpp"
 #include "robot_db.hpp"
 #include "sql.hpp"
 
@@ -61,9 +64,10 @@ int UsersRobotsDb::LoadAllRobots() const {
   unique_ptr<SqlQuery> sql_query(database_->Query(kQuery));
   if (sql_query.get() != nullptr && sql_query->status() == SqlQuery::Status::EXECUTED) {
     int count = 0;
+    RobotDB* robot_db = RobotDB::mutable_instance();
     while (sql_query->NextResultRow()) {
-      RobotDB::AddRobot(sql_query->GetResultValue("robot_id"),
-                        sql_query->GetResultValue("robot_name"));
+        robot_db->AddRobot(sql_query->GetResultValue("robot_id"),
+                           sql_query->GetResultValue("robot_name"));
       count++;
     }
     return count;
@@ -71,7 +75,8 @@ int UsersRobotsDb::LoadAllRobots() const {
   return -1;
 }
 
-bool UsersRobotsDb::ListUserRobots(const string& username, vector<Robot*>* result) const {
+bool UsersRobotsDb::ListUserRobots(const string& username,
+                                   unordered_map<string, Robot*>* result) const {
   string query(
     "SELECT robot_id "
     "FROM Robots "
@@ -80,10 +85,11 @@ bool UsersRobotsDb::ListUserRobots(const string& username, vector<Robot*>* resul
     "WHERE username = '" + username + "';");
   unique_ptr<SqlQuery> sql_query(database_->Query(query));
   if (sql_query.get() != nullptr && sql_query->status() == SqlQuery::Status::EXECUTED) {
+    const RobotDB* robot_db = RobotDB::instance();
     while (sql_query->NextResultRow()) {
-      Robot* robot = RobotDB::GetRobot(sql_query->GetResultValue("robot_id"));
+      Robot* robot = robot_db->GetRobot(sql_query->GetResultValue("robot_id"));
       if (robot != nullptr) {
-        result->push_back(robot);
+        result->insert(std::make_pair(robot->robot_id(), robot));
       }
     }
     return true;

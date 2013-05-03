@@ -17,30 +17,12 @@
 
 #include "robot_service.hpp"
 
-#include "logging.hpp"
-#include "robot.hpp"
-#include "robot_db.hpp"
-
 namespace robot_control_system {
 
 RobotService::RobotService() {}
 
-void RobotService::Login(RobotServiceResponse& response, const LoginRequest& request) {
-  LOG_INFO("Login " + request.robot_id);
-  response.status = RequestStatus::ERROR;
-  Robot* robot = RobotDB::GetRobot(request.robot_id);
-  if (robot == nullptr) return;
-  robot->set_online(true);
-  response.status = RequestStatus::OK;
-}
-
-void RobotService::Logout(RobotServiceResponse& response, const LogoutRequest& request) {
-  LOG_INFO("Logout " + request.robot_id);
-  response.status = RequestStatus::ERROR;
-  Robot* robot = RobotDB::GetRobot(request.robot_id);
-  if (robot == nullptr) return;
-  robot->set_online(false);
-  response.status = RequestStatus::OK;
+void RobotService::Echo(std::string& response, const std::string& message) {
+  response = message;
 }
 
 }

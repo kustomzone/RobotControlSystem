@@ -39,7 +39,7 @@ void RobotControlServer::AcceptRemoteServer(
   string robot_id;
   robot_client->GetRobotId(robot_id);
   LOG_INFO("Accepted proxy connection from robot " + robot_id);
-  Robot* robot = RobotDB::GetRobot(robot_id);
+  Robot* robot = RobotDB::instance()->GetRobot(robot_id);
   if (robot == nullptr) {
     LOG_WARNING("Unknown robot " + robot_id);
     return;

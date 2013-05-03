@@ -59,8 +59,7 @@ class Main : public Singleton<Main> {
         LOG_ERROR("Failed to connect to the SQL database.");
         return 1;
       }
-      int robot_count = users_robots_db_->LoadAllRobots();
-      LOG_INFO("Loaded " + std::to_string(robot_count) + " robots.");
+      RobotDB::mutable_instance()->Init(users_robots_db_.get());
 
       LOG_INFO("Starting robot server...");
       Server::Params robot_server_params(kRobotServerPort);

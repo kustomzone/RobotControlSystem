@@ -18,11 +18,19 @@
 #ifndef ROBOT_CONTROL_SYSTEM_USER_SERVICE_HPP_
 #define ROBOT_CONTROL_SYSTEM_USER_SERVICE_HPP_
 
+#include <string>
+#include <unordered_map>
+
 #include "macros.hpp"
 #include "thrift_server.hpp"
 #include "../RcsThrift/UserService.h"
 
 namespace robot_control_system {
+
+using ::std::string;
+using ::std::unordered_map;
+
+class Robot;
 
 /*
  * Implementation of Thrift service UserService.
@@ -34,7 +42,29 @@ class UserService : public UserServiceIf {
   public:
     UserService();
 
+    virtual bool Login(const UserLoginRequest& request);
+
+    virtual void Logout();
+
+    // Throws AccessDeniedException.
+    virtual RobotStatus::type GetRobotStatus(const string& robot_id);
+
+    // Throws AccessDeniedException.
+    virtual RobotStatus::type SetRobotStatus(const string& robot_id,
+                                             const RobotStatus::type new_status);
+
+    // Throws AccessDeniedException.
+    virtual void ListRobots(UserRobots& result);
+
+    // Throws AccessDeniedException.
     virtual void SendCommand(CommandResponse& response, const CommandRequest& request);
+
+  private:
+    static RobotStatus::type GetRobotStatus(const Robot* robot);
+
+    bool logged_in_;
+    string username_;
+    unordered_map<string, Robot*> user_robots_;  // Robots accessible by the user.
 };
 
 DEFINE_THRIFT_SERVER(UserService);

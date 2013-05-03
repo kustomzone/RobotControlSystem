@@ -20,14 +20,18 @@
 #include <algorithm>
 #include <utility>
 
+#include "logging.hpp"
 #include "robot.hpp"
+#include "users_robots_db.hpp"
 
 namespace robot_control_system {
 
 using ::std::for_each;
 using ::std::pair;
 
-RobotDB::RobotDB() {}
+RobotDB::RobotDB()
+  : users_robots_db_(nullptr) {
+}
 
 RobotDB::~RobotDB() {
   for_each(robots_.begin(), robots_.end(), [](pair<const string, Robot*> item) {
@@ -35,25 +39,25 @@ RobotDB::~RobotDB() {
   });
 }
 
-// static
-Robot* RobotDB::AddRobot(const string& robot_id, const string& robot_name) {
-  return mutable_instance()->AddRobotImpl(robot_id, robot_name);
+void RobotDB::Init(const UsersRobotsDb* users_robots_db) {
+  if (users_robots_db_ != nullptr) {
+    LOG_ERROR("Duplicate initialization of RobotDB.");
+    return;
+  }
+  users_robots_db_ = users_robots_db;
+  int robot_count = users_robots_db_->LoadAllRobots();
+  LOG_INFO("Loaded " + std::to_string(robot_count) + " robots.");
 }
 
-Robot* RobotDB::AddRobotImpl(const string& robot_id, const string& robot_name) {
+Robot* RobotDB::AddRobot(const string& robot_id, const string& robot_name) {
   unordered_map<string, Robot*>::iterator it = robots_.find(robot_id);
   if (it != robots_.end()) return it->second;
   Robot* robot = new Robot(robot_id, robot_name);
-  robots_.insert(make_pair(robot_id, robot));
+  robots_.insert(std::make_pair(robot_id, robot));
   return robot;
 }
 
-// static
-Robot* RobotDB::GetRobot(const string& robot_id) {
-  return instance()->GetRobotImpl(robot_id);
-}
-
-Robot* RobotDB::GetRobotImpl(const string& robot_id) const {
+Robot* RobotDB::GetRobot(const string& robot_id) const {
   unordered_map<string, Robot*>::const_iterator it = robots_.find(robot_id);
   if (it == robots_.end()) return nullptr;
   return it->second;

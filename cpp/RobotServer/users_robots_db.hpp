@@ -20,7 +20,7 @@
 
 #include <memory>
 #include <string>
-#include <vector>
+#include <unordered_map>
 
 #include "macros.hpp"
 
@@ -28,7 +28,7 @@ namespace robot_control_system {
 
 using ::std::string;
 using ::std::unique_ptr;
-using ::std::vector;
+using ::std::unordered_map;
 
 class Robot;
 class SqlDatabase;
@@ -76,10 +76,11 @@ class UsersRobotsDb {
     // Returns the number of robots loaded or -1 if there was an error.
     int LoadAllRobots() const;
 
-    // Lists all robots to with the user has access. Returns the robots in result.
-    // Owernship of the returned pointers is retained.
+    // Lists all robots to with the user has access. Returns the robots in result indexed by
+    // robot ID.
+    // Owernship of the returned Robot pointers is retained.
     // Returns false if the list could not be obtained.
-    bool ListUserRobots(const string& username, vector<Robot*>* result) const;
+    bool ListUserRobots(const string& username, unordered_map<string, Robot*>* result) const;
 
   private:
     // UsersRobotsDb is instantiated via Create();

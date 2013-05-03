@@ -28,7 +28,6 @@
 namespace robot_control_system {
 
 using ::std::ifstream;
-using ::std::make_pair;
 using ::std::vector;
 
 struct MySql {
@@ -91,7 +90,7 @@ void SqlQuery::SetResult(const MySqlResult& result) {
   num_result_fields_ = mysql_num_fields(result.value);
   MYSQL_FIELD* fields = mysql_fetch_fields(result.value);
   for (int i = 0; i < num_result_fields_; ++i) {
-    field_map_.insert(make_pair(fields[i].name, i));
+    field_map_.insert(std::make_pair(fields[i].name, i));
   }
   status_ = Status::EXECUTED;
 }
