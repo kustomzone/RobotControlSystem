@@ -7,6 +7,7 @@
   <script type="text/javascript" src="js/websocket_transport.js"></script>
   <script type="text/javascript" src="js/user_service_types.js"></script>
   <script type="text/javascript" src="js/UserService.js"></script>
+  <script type="text/javascript" src="js/sha1.js"></script>
   <script type="text/javascript" src="js/control.js"></script>
   <script type="text/javascript">
     function loadPage() {
@@ -22,6 +23,9 @@
   <table border="1">
     <tr>
       <td>Username: <input id="text_username" type="text" /></td>
+      <td>Password: <input id="text_password" type="password"/></td>
+      <td><input id="button_login" type="button" value="Login" onclick="login(this)" /></td>
+      <td><input id="button_logout" type="button" value="Logout" onclick="logout(this)" /></td>
       <td>Robot ID: <input id="text_robotid" type="text" /></td>
     </tr>
   </table>

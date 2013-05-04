@@ -50,6 +50,7 @@ public class WebUserClientHandler extends MessageInbound {
 	private AutoExpandingBufferWriteTransport output_;
 	private TProtocol input_protocol_, output_protocol_;
 	private TProcessor processor_;
+	private UserServiceHandler service_handler_;
 	
 	public WebUserClientHandler() {
 		input_buffer_ = new AutoExpandingBuffer(kInitBufferSize, kBufferGrowthFactor);
@@ -58,10 +59,16 @@ public class WebUserClientHandler extends MessageInbound {
 		TProtocolFactory protocol_factory = new TJSONProtocol.Factory();
 		input_protocol_ = protocol_factory.getProtocol(input_);
 		output_protocol_ = protocol_factory.getProtocol(output_);
-		UserServiceHandler service_handler = new UserServiceHandler();
-		processor_ = new UserService.Processor<UserService.Iface>(service_handler);
+		service_handler_ = new UserServiceHandler();
+		service_handler_.open();
+		processor_ = new UserService.Processor<UserService.Iface>(service_handler_);
 	}
-
+	
+	@Override
+	protected void onClose(int status) {
+		service_handler_.close();
+	}
+	
 	@Override
 	protected void onBinaryMessage(ByteBuffer message) {
 		// No binary messages are transmitted.

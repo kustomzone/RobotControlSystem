@@ -24,9 +24,13 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 
+import lib.robotics.rcs.server.AccessDeniedException;
 import lib.robotics.rcs.server.CommandRequest;
 import lib.robotics.rcs.server.CommandResponse;
 import lib.robotics.rcs.server.CommandStatus;
+import lib.robotics.rcs.server.RobotStatus;
+import lib.robotics.rcs.server.UserLoginRequest;
+import lib.robotics.rcs.server.UserRobots;
 import lib.robotics.rcs.server.UserService;
 
 /**
@@ -37,50 +41,79 @@ import lib.robotics.rcs.server.UserService;
  * backend server.
  */
 public class UserServiceHandler implements UserService.Iface {
+
+	public static final String kServerAddress = "localhost";
+	public static final int kServerPort = 6100;
+
+	private TTransport transport_;
+	private UserService.Client client_;
 	
-	private static class ServiceClient {
-
-		public static final String kServerAddress = "localhost";
-		public static final int kServerPort = 6100;
-		
-		private static ServiceClient instance = null;
-
-		private TTransport transport_;
-		private UserService.Client client_;
-
-		private ServiceClient() {
-			transport_ = new TSocket(kServerAddress, kServerPort);
-			try {
-				transport_.open();
-				TProtocol protocol = new TBinaryProtocol(transport_);
-				client_ = new UserService.Client(protocol);
-			} catch (TTransportException e) {
-				e.printStackTrace();
-				transport_ = null;
-			}
+	public UserServiceHandler() {
+		transport_ = null;
+		client_ = null;
+	}
+	
+	/**
+	 * Opens a new connection to the RCS server.
+	 */
+	public void open() {
+		transport_ = new TSocket(kServerAddress, kServerPort);
+		try {
+			transport_.open();
+			TProtocol protocol = new TBinaryProtocol(transport_);
+			client_ = new UserService.Client(protocol);
+		} catch (TTransportException e) {
+			e.printStackTrace();
+			transport_ = null;
 		}
-		
-		public static synchronized ServiceClient getInstance() {
-			if (instance == null) {
-				instance = new ServiceClient();
-			}
-			return instance;
-		}
-		
-		public synchronized CommandResponse sendCommand(CommandRequest request) {
-			try {
-				return client_.SendCommand(request);
-			} catch (TException e) {
-				e.printStackTrace();
-			}
-			CommandResponse response = new CommandResponse();
-			response.setStatus(CommandStatus.ERROR);
-			return response; 
-		}
+	}
+	
+	/**
+	 * Closes the connection to the RCS.
+	 */
+	public void close() {
+		if (transport_ == null) return;
+		transport_.close();
+		transport_ = null;
+		client_ = null;
+	}
+
+	@Override
+	public RobotStatus GetRobotStatus(String robot_id)
+			throws AccessDeniedException, TException {
+		return client_.GetRobotStatus(robot_id);
+	}
+
+	@Override
+	public UserRobots ListRobots() throws AccessDeniedException, TException {
+		return client_.ListRobots();
+	}
+
+	@Override
+	public boolean Login(UserLoginRequest request) throws TException {
+		return client_.Login(request);
+	}
+
+	@Override
+	public void Logout() throws TException {
+		client_.Logout();
+	}
+
+	@Override
+	public RobotStatus SetRobotStatus(String robot_id, RobotStatus new_status)
+			throws AccessDeniedException, TException {
+		return client_.SetRobotStatus(robot_id, new_status);
 	}
 
 	@Override
 	public CommandResponse SendCommand(CommandRequest request) {
-		return ServiceClient.getInstance().sendCommand(request);
+		try {
+			return client_.SendCommand(request);
+		} catch (TException e) {
+			e.printStackTrace();
+		}
+		CommandResponse response = new CommandResponse();
+		response.setStatus(CommandStatus.ERROR);
+		return response; 
 	}
 }

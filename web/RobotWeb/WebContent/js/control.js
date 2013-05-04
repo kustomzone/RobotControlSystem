@@ -17,6 +17,7 @@
 
 const kServerAddress = "localhost:8080/RobotWeb/user_service";
 const kUserNameId = "text_username";
+const kPasswordId = "text_password";
 const kRobotId = "text_robotid";
 const kStopId = "button_stop";
 const kForwardId = "button_forward";
@@ -31,8 +32,11 @@ var transport;
 var protocol;
 var user_service;
 
+var last_rpc;
+
 // Initializes the user service thrift client.
 function initUserService() {
+	last_rpc = 0;
 	transport = new WebSocketTransport(kServerAddress);
 	protocol = new Thrift.Protocol(transport);
 	user_service = new UserServiceClient(protocol);
@@ -48,6 +52,24 @@ function shutDownUserService() {
 function showResponse(response_text) {
 	var response_paragraph = document.getElementById(kResponseId);
 	response_paragraph.textContent = response_text;
+}
+
+// Logs in the user.
+function login(sender) {
+	var username = document.getElementById(kUserNameId).value;
+	var password = document.getElementById(kPasswordId).value;
+	var digest = SHA1(password + username);
+	var request = new UserLoginRequest();
+	request.username = username;
+	request.password = digest;
+	last_rpc = 1;
+	user_service.send_Login(request);
+}
+
+// Logs out the user.
+function logout(sender) {
+	last_rpc = 2;
+	user_service.send_Logout();
 }
 
 // Retunrs the command code given an onControl event sender. 
@@ -79,14 +101,28 @@ function onControl(sender) {
 	request.from = username;
 	request.to = robot_id;
 	request.command = getCommand(sender);
+	last_rpc = 3;
 	user_service.send_SendCommand(request);
 }
 
 function serverResponseHandler() {
-	var result = user_service.recv_SendCommand();
-	switch (result.status) {
-		case CommandStatus["OK"]: showResponse("ok"); break;
-		case CommandStatus["OFFLINE"]: showResponse("robot is offline"); break;
-		default: showResponse("error"); break;
+	switch (last_rpc) {
+		case 1: {
+			var result = user_service.recv_Login();
+			if (result) showResponse("Login OK");
+			else showResponse("Login Failed");
+		}
+		case 2: {
+			user_service.recv_Logout();
+		}
+		case 3: {
+			var result = user_service.recv_SendCommand();
+			switch (result.status) {
+			case CommandStatus["OK"]: showResponse("ok"); break;
+			case CommandStatus["OFFLINE"]: showResponse("robot is offline"); break;
+			default: showResponse("error"); break;
+		}
+	}
+	default: break;
 	}
 }
