@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="ISO-8859-1">
+	<title>RCS Login</title>
+	<script type="text/javascript" src="js/sha1.js"></script>
+	<script type="text/javascript" src="js/login.js"></script>
+</head>
+<body>
+	<table><tr height="200px"><td></td></tr></table>
+	<table align="center" bgcolor="steelblue" cellpadding="10px">
+		<tr>
+			<td><font color="white">Username</font></td>
+			<td><input type="text" style="width: 160px" id="username_input" /></td>
+		</tr>
+		<tr>
+			<td><font color="white">Password</font></td>
+			<td><input type="password" style="width: 160px" id="password_input" /></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><input type="button" style="width: 160px" value="Login" onclick="login()" /></td>
+		</tr>
+	</table>
+	<form name="login_form" action="dologin" method="post">
+		<input type="hidden" name="username" value="1" />
+		<input type="hidden" name="password" value="2" />
+	</form>
+</body>
+</html>

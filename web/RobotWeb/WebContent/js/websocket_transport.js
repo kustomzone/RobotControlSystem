@@ -19,7 +19,7 @@ var ws_message_handler = null;
 var ws_message_data = "";
 var thrift_method_name = "";
 
-// Set a handle that will be called when messages from the server are received.
+// Sets a handle that will be called when messages from the server are received.
 function setWebSocketMessageHandler(message_handler) {
 	ws_message_handler = message_handler;
 }
@@ -28,6 +28,8 @@ function setWebSocketMessageHandler(message_handler) {
 WebSocketTransport = function(server_address) {
 	this.server_address_ = server_address;
 	this.socket_ = null;
+	this.is_open_ = false;
+	this.last_error_ = null;
 };
 
 WebSocketTransport.prototype = {
@@ -39,24 +41,25 @@ WebSocketTransport.prototype = {
   },
 
   close: function() {
+	  is_open_ = false;
 	  socket.close();
   },
-  
+
   onOpen: function() {
-	  showResponse("connection opened");
+	  is_open_ = true;
   },
-  
+
   onError: function(error) {
-	  showResponse("error: " + error);
+	  last_error_ = error;
   },
-  
+
   onMessage: function(message) {
 	  ws_message_data = message.data;
-          thrift_method_name = ws_message_data.substr(4);
-          thrift_method_name = thrift_method_name.substr(0, thrift_method_name.indexOf("\""));
+      thrift_method_name = ws_message_data.substr(4);
+      thrift_method_name = thrift_method_name.substr(0, thrift_method_name.indexOf("\""));
 	  if (ws_message_handler) ws_message_handler();
   },
-		
+
   flush: function(async) {
 	  return ws_message_data;
   },

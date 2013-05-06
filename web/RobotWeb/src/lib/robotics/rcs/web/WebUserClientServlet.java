@@ -38,6 +38,7 @@ public class WebUserClientServlet extends WebSocketServlet {
 	@Override
 	protected StreamInbound createWebSocketInbound(String subProtocol,
                                                    HttpServletRequest request) {
-		return new WebUserClientHandler();
+		return new WebUserClientHandler(
+				(UserServiceHandler) request.getSession().getAttribute("UserServiceHandler"));
 	}
 }

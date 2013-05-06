@@ -51,22 +51,31 @@ public class WebUserClientHandler extends MessageInbound {
 	private TProtocol input_protocol_, output_protocol_;
 	private TProcessor processor_;
 	private UserServiceHandler service_handler_;
+	private boolean do_close_;
 	
-	public WebUserClientHandler() {
+	public WebUserClientHandler(UserServiceHandler user_service) {
 		input_buffer_ = new AutoExpandingBuffer(kInitBufferSize, kBufferGrowthFactor);
 		input_ = new TMemoryInputTransport();
 		output_ = new AutoExpandingBufferWriteTransport(kInitBufferSize, kBufferGrowthFactor);
 		TProtocolFactory protocol_factory = new TJSONProtocol.Factory();
 		input_protocol_ = protocol_factory.getProtocol(input_);
 		output_protocol_ = protocol_factory.getProtocol(output_);
-		service_handler_ = new UserServiceHandler();
-		service_handler_.open();
+		if (user_service == null) {
+			service_handler_ = new UserServiceHandler();
+			service_handler_.open();
+			do_close_ = true;
+		} else {
+			service_handler_ = user_service;
+			do_close_ = false;
+		}
 		processor_ = new UserService.Processor<UserService.Iface>(service_handler_);
 	}
 	
 	@Override
 	protected void onClose(int status) {
-		service_handler_.close();
+		if (do_close_) {
+			service_handler_.close();
+		}
 	}
 	
 	@Override
