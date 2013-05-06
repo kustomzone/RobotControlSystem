@@ -32,11 +32,8 @@ var transport;
 var protocol;
 var user_service;
 
-var last_rpc;
-
 // Initializes the user service thrift client.
 function initUserService() {
-	last_rpc = 0;
 	transport = new WebSocketTransport(kServerAddress);
 	protocol = new Thrift.Protocol(transport);
 	user_service = new UserServiceClient(protocol);
@@ -62,13 +59,11 @@ function login(sender) {
 	var request = new UserLoginRequest();
 	request.username = username;
 	request.password = digest;
-	last_rpc = 1;
 	user_service.send_Login(request);
 }
 
 // Logs out the user.
 function logout(sender) {
-	last_rpc = 2;
 	user_service.send_Logout();
 }
 
@@ -101,12 +96,15 @@ function onControl(sender) {
 	request.from = username;
 	request.to = robot_id;
 	request.command = getCommand(sender);
-	last_rpc = 3;
 	user_service.send_SendCommand(request);
 }
 
 function serverResponseHandler() {
-	switch (last_rpc) {
+        var method = 0;
+        if (thrift_method_name == "Login") method = 1;
+        else if (thrift_method_name == "Logout") method = 2;
+        else if (thrift_method_name == "SendCommand") method = 3;
+	switch (method) {
 		case 1: {
 			var result = user_service.recv_Login();
 			if (result) showResponse("Login OK");
@@ -114,15 +112,16 @@ function serverResponseHandler() {
 		}
 		case 2: {
 			user_service.recv_Logout();
+                        showResponse("Logged out.");
 		}
 		case 3: {
 			var result = user_service.recv_SendCommand();
 			switch (result.status) {
-			case CommandStatus["OK"]: showResponse("ok"); break;
-			case CommandStatus["OFFLINE"]: showResponse("robot is offline"); break;
-			default: showResponse("error"); break;
-		}
-	}
-	default: break;
+			    case CommandStatus["OK"]: showResponse("ok"); break;
+                            case CommandStatus["OFFLINE"]: showResponse("robot is offline"); break;
+			    default: showResponse("error"); break;
+		        }
+	        }
+	        default: break;
 	}
 }

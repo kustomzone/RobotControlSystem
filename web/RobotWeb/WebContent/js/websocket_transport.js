@@ -17,6 +17,7 @@
 
 var ws_message_handler = null;
 var ws_message_data = "";
+var thrift_method_name = "";
 
 // Set a handle that will be called when messages from the server are received.
 function setWebSocketMessageHandler(message_handler) {
@@ -51,7 +52,8 @@ WebSocketTransport.prototype = {
   
   onMessage: function(message) {
 	  ws_message_data = message.data;
-	  showResponse(ws_message_data);
+          thrift_method_name = ws_message_data.substr(4);
+          thrift_method_name = thrift_method_name.substr(0, thrift_method_name.indexOf("\""));
 	  if (ws_message_handler) ws_message_handler();
   },
 		
