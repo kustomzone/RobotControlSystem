@@ -79,6 +79,7 @@ public class RobotClient {
 				handler.stopService();
 				client.logoutRobot(robot);
 			}
+                        user.logout();
 		} else {
 			console.printf("Log in error.\n");
 		}
