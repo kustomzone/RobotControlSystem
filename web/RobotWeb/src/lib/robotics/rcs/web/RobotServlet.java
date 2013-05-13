@@ -25,15 +25,15 @@ import org.apache.catalina.websocket.StreamInbound;
 
 /**
  * @author Tuna Oezer
- * 
- * Web Servlet that responds to requests initiated via a user over a WebSocket connection.
+ *
+ * Web Servlet that dispatches control events to robots.
  */
-@WebServlet(name="WebUserClientServlet",
-		    description="Responds to control requests over WebSocket.",
-		    urlPatterns={"/user_service"},
-		    asyncSupported=true)
-public class WebUserClientServlet extends WampServlet {
-	private static final long serialVersionUID = 8976837269798223716L;
+@WebServlet(name="RobotServlet",
+			description="Dispatches control requests over WebSocket.",
+			urlPatterns={"/robot_service"},
+			asyncSupported=true)
+public class RobotServlet extends WampServlet {
+	private static final long serialVersionUID = -7323276455985060800L;
 
 	@Override
 	protected StreamInbound createWebSocketInbound(String subProtocol,
@@ -44,6 +44,6 @@ public class WebUserClientServlet extends WampServlet {
 		if (service_handler == null || !service_handler.isLoggedIn()) {
 			return null;  // Not logged in.
 		}
-		return new WebUserClientHandler(session, service_handler);
+		return new WampHandler(session);
 	}
 }

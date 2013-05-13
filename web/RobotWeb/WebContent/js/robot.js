@@ -15,13 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var kServerAddress = "ws://localhost:8080/RobotWeb/user_service";
-var kSendCommandUri = "rpc://lib.robotics.rcs.server.UserService/SendCommand";
+var kServerAddress = "ws://localhost:8080/RobotWeb/robot_service";
+var control_topic;
 
 var wamp_session;
 
+//Show a message text on the page.
+function showMessage(message) {
+	document.getElementById("message_box").textContent = message;
+}
+
+function onEvent(topic, event) {
+	if (topic == control_topic) {
+		showMessage(event.from + ": " + event.command);
+	}
+}
+
 function onOpen(session) {
 	wamp_session = session;
+	wamp_session.subscribe(control_topic, onEvent);
 }
 
 function onClose(exit_code, reason) {
@@ -29,36 +41,12 @@ function onClose(exit_code, reason) {
 }
 
 // Initializes the WAMP connection.
-function initialize() {
+function initialize(robot_id) {
+	control_topic = "pubsub://rcs/robot/" + robot_id + "/control";
 	ab.connect(kServerAddress, onOpen, onClose);
 }
 
 // Uninitializes the WAMP connection.
 function uninitialize() {
 	wamp_session.close();
-}
-
-// Show a message text on the page.
-function showMessage(message) {
-	document.getElementById("message_box").textContent = message;
-}
-
-//Handles control button clicks.
-function sendCommand(command) {
-	showMessage("Last command: " + command);
-	var request = new CommandRequest();
-	request.from = g_username;
-	request.to = g_robot_id;
-	request.command = Command[command] - 1;
-	wamp_session.call(kSendCommandUri, request).then(serverResponseHandler);
-}
-
-// Dispatches the response.
-function serverResponseHandler(result) {
-	if (result.status == "OK") return;
-	if (result.status == "OFFLINE") {
-		showMessage("The robot is offline.");
-		return;
-	}
-	showMessage("A transmission error occurred.");
 }

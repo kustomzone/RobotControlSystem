@@ -62,7 +62,8 @@ public class LoginServlet extends HttpServlet {
 					try {
 						if (user_service.Login(login_request)) {
 							session.setAttribute("username", username);
-							session.setAttribute("UserServiceHandler", user_service);
+							session.setAttribute(
+									UserServiceHandler.kUserServiceHandler, user_service);
 							response.sendRedirect("home.jsp");
 							return;
 						}

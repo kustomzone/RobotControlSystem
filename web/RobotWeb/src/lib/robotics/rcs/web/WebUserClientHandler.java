@@ -17,94 +17,39 @@
 
 package lib.robotics.rcs.web;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
+import javax.servlet.http.HttpSession;
 
-import org.apache.catalina.websocket.MessageInbound;
-
-import org.apache.thrift.TException;
-import org.apache.thrift.TProcessor;
-import org.apache.thrift.protocol.TJSONProtocol;
-import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.protocol.TProtocolFactory;
-import org.apache.thrift.transport.AutoExpandingBuffer;
-import org.apache.thrift.transport.AutoExpandingBufferWriteTransport;
-import org.apache.thrift.transport.TMemoryInputTransport;
-
-import lib.robotics.rcs.server.UserService;
+import lib.robotics.rcs.server.CommandRequest;
 
 /**
  * @author Tuna Oezer
  * 
  * Handles control requests initiated via a user over a WebSocket connection.
  */
-public class WebUserClientHandler extends MessageInbound {
-	
-	private static final int kMaxInputSize = 1 << 17;
-	private static final int kInitBufferSize = 4096;
-	private static final double kBufferGrowthFactor = 1.5;
-	
-	private AutoExpandingBuffer input_buffer_;
-	private TMemoryInputTransport input_;
-	private AutoExpandingBufferWriteTransport output_;
-	private TProtocol input_protocol_, output_protocol_;
-	private TProcessor processor_;
-	private UserServiceHandler service_handler_;
-	private boolean do_close_;
-	
-	public WebUserClientHandler(UserServiceHandler user_service) {
-		input_buffer_ = new AutoExpandingBuffer(kInitBufferSize, kBufferGrowthFactor);
-		input_ = new TMemoryInputTransport();
-		output_ = new AutoExpandingBufferWriteTransport(kInitBufferSize, kBufferGrowthFactor);
-		TProtocolFactory protocol_factory = new TJSONProtocol.Factory();
-		input_protocol_ = protocol_factory.getProtocol(input_);
-		output_protocol_ = protocol_factory.getProtocol(output_);
-		if (user_service == null) {
-			service_handler_ = new UserServiceHandler();
-			service_handler_.open();
-			do_close_ = true;
-		} else {
-			service_handler_ = user_service;
-			do_close_ = false;
-		}
-		processor_ = new UserService.Processor<UserService.Iface>(service_handler_);
-	}
-	
-	@Override
-	protected void onClose(int status) {
-		if (do_close_) {
-			service_handler_.close();
-		}
-	}
-	
-	@Override
-	protected void onBinaryMessage(ByteBuffer message) {
-		// No binary messages are transmitted.
-	}
+public class WebUserClientHandler extends WampHandler {
 
-	@Override
-	protected void onTextMessage(CharBuffer message) {
-		if (message.length() > kMaxInputSize) return;  // Overflow protection.
-		try {
-			input_buffer_.resizeIfNecessary(message.length());
-			byte[] bytes = input_buffer_.array();
-			for (int i = 0; i < message.length(); i++) {
-				bytes[i] = (byte) message.charAt(i);
+	private static final String kSendCommandRpcUri =
+			"rpc://lib.robotics.rcs.server.UserService/SendCommand"; 
+	
+	private UserServiceHandler service_handler_;
+	
+	public WebUserClientHandler(HttpSession session, UserServiceHandler service_handler) {
+		super(session);
+		if (service_handler == null)
+			throw new AssertionError("UserServiceHandler must not be null.");
+		this.service_handler_ = service_handler;
+		
+		registerRpcMethod(kSendCommandRpcUri, new WampRpcMethod() {
+			@Override
+			public void run(WampRpcArgs args, WampRpcReturn callback) {
+				if (args.size() != 1) {
+					callback.throwError(kSendCommandRpcUri + "/error/incorrect_args",
+										"Incorrect number of arguments.");
+					return;
+				}
+				callback.returnRpc(
+						service_handler_.SendCommand(args.getArg(0, CommandRequest.class)));
 			}
-			output_.reset();
-			input_.reset(bytes, 0, message.length());
-			processor_.process(input_protocol_, output_protocol_);
-			bytes = output_.getBuf().array();
-			char[] chars = new char[output_.getPos()];
-			for (int i = 0; i < chars.length; i++) {
-				chars[i] = (char) bytes[i];
-			}
-			getWsOutbound().writeTextMessage(CharBuffer.wrap(chars));
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (TException e) {
-			e.printStackTrace();
-		}
+		});
 	}
 }

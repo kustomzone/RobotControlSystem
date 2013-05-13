@@ -16,8 +16,7 @@
  --%>
 
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="lib.robotics.rcs.web.UserServiceHandler" %>
 <%
 	String robot_id = request.getParameter("robot_id");
@@ -34,22 +33,19 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
   <title>RCS Robot Control</title>
-  <script type="text/javascript" src="js/thrift.js"></script>
-  <script type="text/javascript" src="js/websocket_transport.js"></script>
+  <script type="text/javascript" src="js/autobahn.min.js"></script>
   <script type="text/javascript" src="js/user_service_types.js"></script>
-  <script type="text/javascript" src="js/UserService.js"></script>
-  <script type="text/javascript" src="js/sha1.js"></script>
   <script type="text/javascript" src="js/control.js"></script>
   <script type="text/javascript">
   	var g_username = "<%= username %>";
   	var g_robot_id = "<%= robot_id %>";
   
     function loadPage() {
-    	initUserService();
+    	initialize();
     }
     
     function unloadPage() {
-    	shutDownUserService();
+    	uninitialize();
     }
     
     function onKeyDown(event) {

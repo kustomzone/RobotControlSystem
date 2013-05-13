@@ -3,8 +3,8 @@
   <property name="war_output_dir" value="build/war"/>
   <property name="tomcat_version" value="7.0.39"/>
   <property name="tomcat_dir" value="${user.home}/tomcat/apache-tomcat-${tomcat_version}"/>
-  <property name="thrift_version" value="0.9.0"/>
-  <property name="thrift_dir" value="${user.home}/thrift/thrift-${thrift_version}"/>
+  <property name="jackson_dir" value="${user.home}/sdks/jackson"/>
+  <property name="autobahn_dir" value="${user.home}/sdks/autobahn"/>
 
   <target name="clean">
     <delete dir="build"/>
@@ -25,6 +25,9 @@
 	<fileset dir="${tomcat_dir}/lib">
 	  <include name="*.jar"/>
 	</fileset>
+	<fileset dir="${jackson_dir}">
+	  <include name="*.jar"/>
+	</fileset>
 	<pathelement location="../../java/RcsThrift/build/jar/RcsThrift.jar"/>
       </classpath>
     </javac>
@@ -40,6 +43,11 @@
 	<include name="slf4j-api-1.5.8.jar"/>
 	<include name="slf4j-log4j12-1.5.8.jar"/>
       </fileset>
+      <fileset dir="${jackson_dir}">
+	<include name="jackson-core-2.2.1.jar"/>
+	<include name="jackson-annotations-2.2.1.jar"/>
+	<include name="jackson-databind-2.2.1.jar"/>
+      </fileset>
       <fileset dir="../../java/RcsThrift/build/jar">
 	<include name="RcsThrift.jar"/>
       </fileset>
@@ -52,8 +60,8 @@
       <fileset dir="WebContent">
 	<exclude name="WEB-INF/**/*"/>
       </fileset>
-      <fileset dir="${thrift_dir}/lib">
-	<include name="js/thrift.js"/>
+      <fileset dir="${autobahn_dir}">
+	<include name="js/autobahn.min.js"/>
       </fileset>
       <classes dir="${class_output_dir}"/>
       <lib dir="WebContent/WEB-INF/lib"/>

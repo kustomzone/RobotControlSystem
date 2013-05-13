@@ -44,6 +44,7 @@ import lib.robotics.rcs.server.UserService;
  * backend server.
  */
 public class UserServiceHandler implements UserService.Iface, HttpSessionBindingListener {
+	public static final String kUserServiceHandler = "UserServiceHandler";
 
 	public static final String kServerAddress = "localhost";
 	public static final int kServerPort = 6100;

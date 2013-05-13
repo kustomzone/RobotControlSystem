@@ -57,6 +57,7 @@
 			<tr align="center">
 				<td bgcolor="black"><font color="white"><b>Robot</b></font></td>
 				<td bgcolor="black"><font color="white"><b>State</b></font></td>
+				<td bgcolor="black"><font color="white"><b>Local</b></font></td>
 			</tr>
 	<%
 			try {
@@ -71,11 +72,23 @@
 							</a>
 						</td>
      					<td><font color="white">online</font></td>
+     					<td>
+     						<font color="white">
+	     						<a title="Log in" href="robot.jsp?robot_id=<%= robot.getRobot_id() %>&robot_name=<%= robot.getRobot_name() %>&action=stop">
+	     							stop
+	     						</a>
+     						</font>
+   						</td>
      				</tr>
  				<% } else { %>
      				<tr bgcolor="lightgray" align="center">
      					<td><%= robot.getRobot_name() %></td>
      					<td>offline</td>
+     					<td>
+     						<a title="Log in" href="robot.jsp?robot_id=<%= robot.getRobot_id() %>&robot_name=<%= robot.getRobot_name() %>&action=start">
+     							start
+     						</a>
+    					</td>
      				</tr>
 	<%
      				}
@@ -83,7 +96,7 @@
 			} catch (AccessDeniedException e) {
 			} catch (TException e) {
 			}
-	  %>
+	 %>
 	 	</table>
 	<%
     	} else {
