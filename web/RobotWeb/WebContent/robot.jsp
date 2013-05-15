@@ -21,6 +21,8 @@
 <%@ page import="lib.robotics.rcs.web.RobotControlServiceHandler" %>
 <%@ page import="lib.robotics.rcs.web.UserServiceHandler" %>
 <%
+	String user_agent = request.getHeader("User-Agent");
+	boolean is_mobile = user_agent != null && user_agent.contains("RcsMobileApp");
 	String action = request.getParameter("action");
 	if (action == null) action = "stop";
 	String robot_id = request.getParameter("robot_id");
@@ -55,6 +57,14 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>RCS Robot</title>
+  <% if (is_mobile) { %>
+	  <script type="text/javascript" src="js/cordova-2.7.0.js"></script>
+	  <script type="text/javascript" src="js/webSocket.min.js"></script>
+          <script type="text/javascript" src="js/bluetooth.js"></script>
+	  <script type="text/javascript">
+	  	var WebSocket = plugins.WebSocket;
+	  </script>
+  <% } %>
   <script type="text/javascript" src="js/autobahn.min.js"></script>
   <script type="text/javascript" src="js/user_service_types.js"></script>
   <script type="text/javascript" src="js/robot.js"></script>
@@ -71,6 +81,9 @@
   </script>
 </head>
 <body onload="loadPage()" onunload="unloadPage()">
+      <% if (is_mobile) { %>
+      <h3>mobile</h3>
+      <% } %>
 	<% if (logged_in) { %>
 	   	<table bgcolor="steelblue" width="100%">
 	   		<tr>
@@ -88,7 +101,7 @@
 		<hr />
 	<% 		if (start) { %>
 		<h3><%= robot_name %> has started.</h3>
-		<p id="message_box"></p>
+		<div id="message_box"></div>
 	<%
 			} else if (stop) {
 	 %>

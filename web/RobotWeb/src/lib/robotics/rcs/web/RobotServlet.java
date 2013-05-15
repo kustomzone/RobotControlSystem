@@ -29,21 +29,17 @@ import org.apache.catalina.websocket.StreamInbound;
  * Web Servlet that dispatches control events to robots.
  */
 @WebServlet(name="RobotServlet",
-			description="Dispatches control requests over WebSocket.",
-			urlPatterns={"/robot_service"},
-			asyncSupported=true)
+            description="Dispatches control requests over WebSocket.",
+            urlPatterns={"/robot_service"},
+            asyncSupported=true)
 public class RobotServlet extends WampServlet {
-	private static final long serialVersionUID = -7323276455985060800L;
+    private static final long serialVersionUID = -7323276455985060800L;
 
-	@Override
-	protected StreamInbound createWebSocketInbound(String subProtocol,
+    @Override
+    protected StreamInbound createWebSocketInbound(String subProtocol,
                                                    HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		UserServiceHandler service_handler =
-				(UserServiceHandler) session.getAttribute(UserServiceHandler.kUserServiceHandler);
-		if (service_handler == null || !service_handler.isLoggedIn()) {
-			return null;  // Not logged in.
-		}
-		return new WampHandler(session);
-	}
+        // Currently there is no authentication enforced since the session my change on
+        // some devices.
+        return new WampHandler(request.getSession());
+    }
 }
