@@ -81,9 +81,6 @@
   </script>
 </head>
 <body onload="loadPage()" onunload="unloadPage()">
-      <% if (is_mobile) { %>
-      <h3>mobile</h3>
-      <% } %>
 	<% if (logged_in) { %>
 	   	<table bgcolor="steelblue" width="100%">
 	   		<tr>
