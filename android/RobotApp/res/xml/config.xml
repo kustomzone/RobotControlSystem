@@ -7,7 +7,7 @@
 
     <access origin=".*"/>
     
-    <content src="http://ec2-54-245-59-56.us-west-2.compute.amazonaws.com:8080/RobotWeb/login.html" />
+    <content src="http://localhost:8080/RobotWeb/login.html" />
     
     <log level="DEBUG"/>
     <preference name="useBrowserHistory" value="true" />
