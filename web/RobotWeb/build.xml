@@ -5,6 +5,7 @@
   <property name="tomcat_dir" value="${user.home}/tomcat/apache-tomcat-${tomcat_version}"/>
   <property name="jackson_dir" value="${user.home}/sdks/jackson"/>
   <property name="autobahn_dir" value="${user.home}/sdks/autobahn"/>
+  <property name="cordova_dir" value="${user.home}/sdks/cordova"/>
 
   <target name="clean">
     <delete dir="build"/>
@@ -62,6 +63,10 @@
       </fileset>
       <fileset dir="${autobahn_dir}">
 	<include name="js/autobahn.min.js"/>
+      </fileset>
+      <fileset dir="${cordova_dir}">
+	<include name="js/cordova-2.7.0.js"/>
+	<include name="js/webSocket.min.js"/>
       </fileset>
       <classes dir="${class_output_dir}"/>
       <lib dir="WebContent/WEB-INF/lib"/>
