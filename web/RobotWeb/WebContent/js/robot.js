@@ -20,58 +20,61 @@ var control_topic;
 
 var wamp_session;
 var bt;
-var last_pin = -1;
 
 //Show a message text on the page.
 function showMessage(message) {
-    var x = document.createElement("p");
-    x.textContent = message;
-    document.getElementById("message_box").appendChild(x);
+  document.getElementById("log").textContent += message + "\n";
 }
 
 function onEvent(topic, event) {
-    if (topic == control_topic) {
+  if (topic == control_topic) {
 	showMessage(event.from + ": " + event.command);
-        if (bt) {
-            var pin = 0;
-            if ("STOP" == event.command) pin = 2;
-            else if ("MOVE_FORWARD" == event.command) pin = 3;
-            else if ("MOVE_BACKWARD" == event.command) pin = 4;
-            else if ("TURN_LEFT" == event.command) pin = 5;
-            else if ("TURN_RIGHT" == event.command) pin = 6;
-            else if ("TILT_UP" == event.command) pin = 8;
-            else if ("TILT_DOWN" == event.command) pin = 9;
-            if (pin > 0) {
-                bt.send("dwrite(" + pin + ",1);");
-                if (last_pin > 0) {
-                    bt.send("dwrite(" + last_pin + ",0);");
-                }
-                last_pin = pin;
-            }
-        }
-    }
+      if (bt) {
+          if ("STOP" == event.command) {
+              bt.send("dwrite(22,0);dwrite(24,0);dwrite(30,0);dwrite(32,0);");
+          } else if ("MOVE_FORWARD" == event.command) {
+              bt.send("dwrite(24,0);dwrite(22,1);pwm(11,128);");
+              bt.send("dwrite(30,0);dwrite(32,1);pwm(12,128);");
+          } else if ("MOVE_BACKWARD" == event.command) {
+              bt.send("dwrite(22,0);dwrite(24,1);pwm(11,128);");
+              bt.send("dwrite(32,0);dwrite(30,1);pwm(12,128);");
+          } else if ("TURN_LEFT" == event.command) {
+              bt.send("dwrite(22,0);dwrite(24,1);pwm(11,128);");
+              bt.send("dwrite(30,0);dwrite(32,1);pwm(12,128);");
+          } else if ("TURN_RIGHT" == event.command) {
+              bt.send("dwrite(24,0);dwrite(22,1);pwm(11,128);");
+              bt.send("dwrite(32,0);dwrite(30,1);pwm(12,128);");
+          } else if ("TILT_UP" == event.command) {
+              bt.send("dwrite(28,1);");
+          } else if ("TILT_DOWN" == event.command) {
+              bt.send("dwrite(28,0);");
+          }
+      }
+  }
 }
 
-function onOpen(session) {
-    wamp_session = session;
-    bt = new Bluetooth();
-    bt.open("00:00:00:00:00:00", "00001101-0000-1000-8000-00805F9B34FB", function (result) {
-       wamp_session.subscribe(control_topic, onEvent);
-    });
+function onOpen(session, bt_address) {
+  wamp_session = session;
+  showMessage("WAMP open");
+  bt = new Bluetooth();
+  bt.open(bt_address, "00001101-0000-1000-8000-00805F9B34FB", function (result) {
+     showMessage("BT open");
+     wamp_session.subscribe(control_topic, onEvent);
+  });
 }
 
 function onClose(exit_code, reason) {
-    wamp_session = null;
-    if (bt) bt.close();
+  wamp_session = null;
+  if (bt) bt.close();
 }
 
-// Initializes the WAMP connection.
-function initialize(robot_id) {
-    control_topic = "pubsub://rcs/robot/" + robot_id + "/control";
-    ab.connect(kServerAddress, onOpen, onClose);
+//Initializes the WAMP connection.
+function initialize(robot_id, bt_address) {
+  control_topic = "pubsub://rcs/robot/" + robot_id + "/control";
+  ab.connect(kServerAddress, function(session) { onOpen(session, bt_address); }, onClose);
 }
 
-// Uninitializes the WAMP connection.
+//Uninitializes the WAMP connection.
 function uninitialize() {
-    wamp_session.close();
+  wamp_session.close();
 }

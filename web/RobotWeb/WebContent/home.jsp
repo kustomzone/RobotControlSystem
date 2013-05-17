@@ -24,6 +24,8 @@
 <%@ page import="lib.robotics.rcs.server.RobotStatus" %>
 <%@ page import="lib.robotics.rcs.web.UserServiceHandler" %>
 <%
+	String user_agent = request.getHeader("User-Agent");
+	boolean is_mobile = user_agent != null && user_agent.contains("RcsMobileApp");
 	String username = null;
 	UserServiceHandler user_service = null;
 	if (!session.isNew()) {
@@ -34,11 +36,21 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+	<style>
+	    .online {
+			background-color: green;
+			text-align: center;
+	    }
+	    .online:hover { background-color: lime; } 
+		.online a { color: white; }
+		.offline {
+			background-color: lightgray;
+			text-align: center;
+		}
+		.offline a { color: black; }
+	</style>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 	<title>RCS Home</title>
-	<style>
-		a { color: white; }
-	</style>
 </head>
 <body>
     <% if (username != null && user_service != null && user_service.isLoggedIn()) { %>
@@ -53,42 +65,48 @@
     		</tr>
     	</table>
 		<hr />
-		<table width="500px">
+		<p align="center">Where do you want to go?</p>
+		<table align="center" width="70%">
 			<tr align="center">
-				<td bgcolor="black"><font color="white"><b>Robot</b></font></td>
-				<td bgcolor="black"><font color="white"><b>State</b></font></td>
-				<td bgcolor="black"><font color="white"><b>Local</b></font></td>
+		      <td bgcolor="black" width="33%"><font color="white"><b>Robot</b></font></td>
+      		  <td bgcolor="black" width="34%"><font color="white"><b>Location</b></font></td>
+      		  <td bgcolor="black" width="33%"><font color="white"><b>State</b></font></td>
 			</tr>
 	<%
 			try {
 				List<RobotInfo> robots = user_service.ListRobots().getRobots();
 				for (RobotInfo robot : robots) {
 					if (robot.getRobot_status() == RobotStatus.ONLINE) {
+						String target_url = is_mobile ? "robot_connect.jsp" : "control.jsp";
+						target_url += "?robot_id=" + robot.getRobot_id() +
+							"&robot_name=" + robot.getRobot_name();
      %>
-     				<tr bgcolor="green" align="center" onmouseover="this.bgColor='lime'" onmouseout="this.bgColor='green'">
+     				<tr class="online" onclick="window.location='<%= target_url %>'">
      					<td>
-   							<a title="Connect" href="control.jsp?robot_id=<%= robot.getRobot_id() %>&robot_name=<%= robot.getRobot_name() %>">
+   							<a title="Connect" href="<%= target_url %>">
 								<%= robot.getRobot_name() %>
 							</a>
 						</td>
+						<td>
+				     	   <font color="white">
+					           <a href="https://maps.google.com/maps?q=37.407993,-122.055531&hl=en&ll=37.407801,-122.054415&spn=0.037089,0.078964&sll=37.40867,-122.055219&sspn=0.002318,0.004935&t=m&z=14">
+					               Mountain View, CA, USA
+					           </a>
+				     	   </font>
+				        </td>
      					<td><font color="white">online</font></td>
-     					<td>
-     						<font color="white">
-	     						<a title="Log in" href="robot.jsp?robot_id=<%= robot.getRobot_id() %>&robot_name=<%= robot.getRobot_name() %>&action=stop">
-	     							stop
-	     						</a>
-     						</font>
-   						</td>
      				</tr>
  				<% } else { %>
-     				<tr bgcolor="lightgray" align="center">
+     				<tr class="offline">
      					<td><%= robot.getRobot_name() %></td>
+						<td>
+				     	   <font color="white">
+					           <a href="https://maps.google.com/maps?q=37.407993,-122.055531&hl=en&ll=37.407801,-122.054415&spn=0.037089,0.078964&sll=37.40867,-122.055219&sspn=0.002318,0.004935&t=m&z=14">
+					               Mountain View, CA, USA
+					           </a>
+				     	   </font>
+				        </td>
      					<td>offline</td>
-     					<td>
-     						<a title="Log in" href="robot.jsp?robot_id=<%= robot.getRobot_id() %>&robot_name=<%= robot.getRobot_name() %>&action=start">
-     							start
-     						</a>
-    					</td>
      				</tr>
 	<%
      				}

@@ -33,6 +33,9 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
   <title>RCS Robot Control</title>
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+  <script src="http://anthonyterrien.com/js/jquery.knob.js"></script>
   <script type="text/javascript" src="js/autobahn.min.js"></script>
   <script type="text/javascript" src="js/user_service_types.js"></script>
   <script type="text/javascript" src="js/control.js"></script>
@@ -42,10 +45,91 @@
   
     function loadPage() {
     	initialize();
-    }
+
+        $("#speed_slider").slider({
+            orientation: "vertical",
+            range: "min",
+            min: -100,
+            max: 100,
+            value: 0,
+            animate: "slow",
+            slide: function(event, ui) {
+              $("#speed_amount").val(ui.value);
+              if (ui.value > 50) {
+            	  sendCommand("MOVE_FORWARD");
+              } else if (ui.value < -50) {
+            	  sendCommand("MOVE_BACKWARD");
+              } else {
+            	  sendCommand("STOP");
+              }
+            }
+          });
+        $("#speed_amount").val($("#speed_slider").slider("value"));
+
+        $(".knob").knob({
+            change : function (value) {
+            	if (value < 45) {
+            		sendCommand("STOP");
+            	} else if (value < 180) {
+            		sendCommand("TURN_RIGHT");
+            	} else if (value < 315) {
+            		sendCommand("TURN_LEFT");
+            	} else {
+            		sendCommand("STOP");
+            	}
+            },
+            draw : function () {
+              // "tron" case
+              if(this.$.data('skin') == 'tron') {
+                var a = this.angle(this.cv),  // Angle
+                    sa = this.startAngle,     // Previous start angle
+                    sat = this.startAngle,    // Start angle
+                    ea,                       // Previous end angle
+                    eat = sat + a,            // End angle
+                    r = true;
+
+                    this.g.lineWidth = this.lineWidth;
+
+                    this.o.cursor
+                         && (sat = eat - 0.3)
+                         && (eat = eat + 0.3);
+
+                    if (this.o.displayPrevious) {
+                      ea = this.startAngle + this.angle(this.value);
+                      this.o.cursor
+                        && (sa = ea - 0.3)
+                        && (ea = ea + 0.3);
+                      this.g.beginPath();
+                      this.g.strokeStyle = this.previousColor;
+                      this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sa, ea, false);
+                      this.g.stroke();
+                    }
+
+                    this.g.beginPath();
+                    this.g.strokeStyle = r ? this.o.fgColor : this.fgColor ;
+                    this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sat, eat, false);
+                    this.g.stroke();
+
+                    this.g.lineWidth = 2;
+                    this.g.beginPath();
+                    this.g.strokeStyle = this.o.fgColor;
+                    this.g.arc(this.xy, this.xy, this.radius - this.lineWidth + 1 + this.lineWidth * 2 / 3, 0, 2 * Math.PI, false);
+                    this.g.stroke();
+
+                    return false;
+              }
+            }
+        });
+	}
     
     function unloadPage() {
     	uninitialize();
+    }
+
+    function onStop() {
+      $("#speed_slider").slider({value: 0});
+      $("#speed_amount").val($("#speed_slider").slider("value"));
+      sendCommand("STOP");
     }
     
     function onKeyDown(event) {
@@ -70,95 +154,55 @@
 </head>
 <body onload="loadPage()" onunload="unloadPage()" onkeydown="onKeyDown(event)">
 	<% if (username != null && user_service != null && user_service.isLoggedIn()) { %>
-    	<table bgcolor="steelblue" width="100%">
-    		<tr>
-    			<td><font color="white" size="6">Welcome <%= username %></font></td>
-    			<td align="right">
-    				<input type="button" value="Return" style="height: 40px;width:120px" onclick="window.location = 'home.jsp'" />
-   				</td>
-    			<td align="right" width="180px">
-    				<form action="logout.jsp" method="get">
-    					<input type="submit" value="Logout" style="height: 40px;width:120px" />
-    				</form>
-   				</td>
-    		</tr>
-    	</table>
+	   	<table bgcolor="steelblue" width="100%">
+	   		<tr>
+	   			<td>
+	   				<font color="white" size="6">
+	   					<%= username %>: <%= robot_name %>
+	   				</font>
+	   			</td>
+	   			<td align="right">
+	   				<form action="home.jsp" method="get">
+	   					<input type="submit" value="Home" style="height: 40px;width:120px" />
+	   				</form>
+	  			</td>
+	   		</tr>
+	   	</table>
 		<hr />
-      <h3>Controlling <%= robot_name %></h3>
-	  <table border="0" cellpadding="16px">
-	    <tr>
-	      <td>
-	      </td>
-	      <td>
-	        <img title="Forward"
-				 src="img/up_1.jpeg"
-				 style="cursor: pointer"
-				 onmouseover="this.src='img/up_2.jpeg'"
-				 onmouseout="this.src='img/up_1.jpeg'"
-				 onclick="sendCommand('MOVE_FORWARD')" />
-	      </td>
-	      <td></td>
-	      <td>
-	        <img title="Tilt Up"
-				 src="img/up_1.jpeg"
-				 style="cursor: pointer"
-				 onmouseover="this.src='img/up_2.jpeg'"
-				 onmouseout="this.src='img/up_1.jpeg'"
-				 onclick="sendCommand('TILT_UP')" />
-	      </td>
-	    </tr>
-	    <tr>
-	      <td>
-	        <img title="Left"
-				 src="img/left_1.jpeg"
-				 style="cursor: pointer"
-				 onmouseover="this.src='img/left_2.jpeg'"
-				 onmouseout="this.src='img/left_1.jpeg'"
-				 onclick="sendCommand('TURN_LEFT')" />
-	      </td>
-	      <td>
-	        <img title="Stop"
-				 src="img/stop_1.jpeg"
-				 style="cursor: pointer"
-				 onmouseover="this.src='img/stop_2.jpeg'"
-				 onmouseout="this.src='img/stop_1.jpeg'"
-				 onclick="sendCommand('STOP')" />
-	      </td>
-	      <td>
-	        <img title="Right"
-				 src="img/right_1.jpeg"
-				 style="cursor: pointer"
-				 onmouseover="this.src='img/right_2.jpeg'"
-				 onmouseout="this.src='img/right_1.jpeg'"
-				 onclick="sendCommand('TURN_RIGHT')" />
-	      </td>
-	      <td></td>
-	    </tr>
-	    <tr>
-	      <td></td>
-	      <td>
-	        <img title="Backward"
-				 src="img/down_1.jpeg"
-				 style="cursor: pointer"
-				 onmouseover="this.src='img/down_2.jpeg'"
-				 onmouseout="this.src='img/down_1.jpeg'"
-				 onclick="sendCommand('MOVE_BACKWARD')" />
-	      </td>
-	      <td></td>
-	      <td>
-	        <img title="Tilt Down"
-				 src="img/down_1.jpeg"
-				 style="cursor: pointer"
-				 onmouseover="this.src='img/down_2.jpeg'"
-				 onmouseout="this.src='img/down_1.jpeg'"
-				 onclick="sendCommand('TILT_DOWN')" />
-	      </td>
-	    </tr>
-	  </table>
+        <h3>Controlling <%= robot_name %></h3>
 	  <br/>
+		  <table width="90%" cellpadding="50px">
+		    <tr>
+		      <td width="35%" align="center">
+		        <p>
+		          <label for="direction_knob">Direction</label>
+		          <br/><br/>
+		          <input id="direction_knob"
+		               class="knob"
+		               data-width="200"
+		               data-cursor="true"
+		               data-fgColor="#222222"
+		               data-thickness=".6"
+		               data-max="359"
+		               data-displayPrevious="true"
+		               value="0"/>
+		        </p>
+		      </td>
+		      <td width="40%">
+		        <p>
+		          <label for="speed_amount">Speed:</label>
+		          <input type="text" id="speed_amount" style="border: 0; color: #f6931f; font-weight: bold;" />
+		        </p>
+		        <br/>
+		        <div id="speed_slider" style="width:150px;height:250px;"></div>
+		      </td>
+		      <td width="25%" align="center">
+		        <button style="background-color:red;width:90%;height:60px;" onclick="onStop()">STOP</button>
+		      </td>
+		    </tr>
+		  </table>
       <p>
-      	 Click the buttons above or use keyboard to control the robot.<br/>
-         Keyboard: Use arrow keys or W (up), A (left), S (back), D (right), X (stop), Q (tilt up), E (tilt down).
+      	Keyboard: Use arrow keys or W (up), A (left), S (back), D (right), X (stop), Q (tilt up), E (tilt down).
       </p>
 	  <p id="message_box"></p>
 	<%
