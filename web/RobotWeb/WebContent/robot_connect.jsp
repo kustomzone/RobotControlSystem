@@ -42,20 +42,25 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>RCS Robot</title>
 	<script type="text/javascript" src="js/cordova-2.7.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
     <script type="text/javascript" src="js/bluetooth.js"></script>
     <script type="text/javascript">
+        function onRowClick(bt_address) {
+          return function() {
+                 window.location = "robot.jsp?" +
+                        "robot_id=<%= robot_id %>&" +
+                        "robot_name=<%= robot_name %>&" +
+                        "bt_address=" + bt_address;
+          };
+        }
+
     	function fillTable(devices) {
-			var table = document.getElementById("device_table");
+		var table = document.getElementById("device_table");
     		for (var i = 0; i < devices.length; i++) {
     			var row = document.createElement("tr");
     			row.className = i % 2 == 0 ? "even" : "odd";
-    			row.onclick = function() {
-    				window.location = "robot.jsp?" +
-    						"robot_id=<%= robot_id %>&" +
-    						"robot_name=<%= robot_name %>&" +
-    						"bt_address=" + devices[i].address;
-    			};
-    			table.appendChild(row);
+    			row.onclick = onRowClick(devices[i].address);
+  			table.appendChild(row);
     			var cell = document.createElement("td");
     			cell.textContent = devices[i].name;
     			row.appendChild(cell);
@@ -64,14 +69,17 @@
     			row.appendChild(cell);
     		}
     	}
-    
-    	function listDevices() {
-    		bt = new Bluetooth();
-    		bt.listBluetoothDevices(fillTable);
-    	}
+
+        $(window).load(function() {
+          setTimeout(function() {
+            var bt = new Bluetooth();
+      	    //bt.listBluetoothDevices(fillTable);
+    	    bt.listBluetoothDevices(function(x) { fillTable(x); } );
+          }, 3000);
+        });
     </script>
 </head>
-<body onload="listDevices()">
+<body>
    	<table bgcolor="steelblue" width="100%">
    		<tr>
    			<td>

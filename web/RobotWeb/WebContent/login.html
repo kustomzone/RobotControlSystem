@@ -1,37 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<style>
-		html { height: 100%; }
-		body { height: 90%; }
-	</style>
-	<meta charset="ISO-8859-1">
-	<title>RCS Login</title>
-	<script type="text/javascript" src="js/sha1.js"></script>
-	<script type="text/javascript" src="js/login.js"></script>
+  <style>
+    html { height: 100%; }
+    body { height: 90%; }
+  </style>
+  <meta charset="ISO-8859-1">
+  <title>RCS Login</title>
+  <script type="text/javascript" src="js/sha1.js"></script>
+  <script type="text/javascript" src="js/login.js"></script>
 </head>
 <body>
-	<table height="100%" width="100%">
-		<tr>
-			<table align="center" bgcolor="steelblue" cellpadding="10px" height="35%" width=50%"">
-				<tr>
-					<td><font color="white">Username</font></td>
-					<td><input type="text" id="username_input" style="height:25px;width:90%;" /></td>
-				</tr>
-				<tr>
-					<td><font color="white">Password</font></td>
-					<td><input type="password" id="password_input" style="height:25px;width:90%;" /></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td><input type="button" style="height:40px;width:90%;" value="Login" onclick="login()" /></td>
-				</tr>
-			</table>
-		</tr>
+  <table height="100%" width="100%">
+    <tr>
+      <td valign="center">
+        <table align="center" height="35%" width="50%" bgcolor="steelblue" cellpadding="10px">
+	  <tr>
+	    <td><font color="white">Username</font></td>
+	    <td><input type="text" id="username_input" style="height:25px;width:90%;" /></td>
+	  </tr>
+	  <tr>
+	    <td><font color="white">Password</font></td>
+	    <td><input type="password" id="password_input" style="height:25px;width:90%;" /></td>
+	  </tr>
+	  <tr>
+	    <td></td>
+	    <td><input type="button" style="height:40px;width:90%;" value="Login" onclick="login()" /></td>
+	  </tr>
 	</table>
-	<form name="login_form" action="dologin" method="post">
-		<input type="hidden" name="username" value="1" />
-		<input type="hidden" name="password" value="2" />
-	</form>
+    </tr>
+  </table>
+  <form name="login_form" action="dologin" method="post">
+    <input type="hidden" name="username" value="1" />
+    <input type="hidden" name="password" value="2" />
+  </form>
 </body>
 </html>

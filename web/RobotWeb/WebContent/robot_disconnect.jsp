@@ -9,13 +9,13 @@
   if (robot_service != null) {
 	  robot_service.stopService();
 	  session.removeAttribute("RobotControlServiceHandler");
-	  robot_service = null;
   }
   UserServiceHandler user_service =
 	(UserServiceHandler) session.getAttribute("UserServiceHandler");
   if (user_service != null) {
   	user_service.SetRobotStatus(robot_service.getRobotId(), RobotStatus.OFFLINE);
   }
+  robot_service = null;
   response.sendRedirect("home.jsp");
  %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

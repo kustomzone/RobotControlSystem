@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var kServerAddress = "ws://localhost:8080/RobotWeb/robot_service";
+var kServerAddress = "ws://ec2-54-245-59-56.us-west-2.compute.amazonaws.com:8080/RobotWeb/robot_service";
 var control_topic;
 
 var wamp_session;
@@ -23,7 +23,9 @@ var bt;
 
 //Show a message text on the page.
 function showMessage(message) {
-  document.getElementById("log").textContent += message + "\n";
+  var p = document.createElement("p");
+  p.textContent = message;
+  document.getElementById("log").appendChild(p);
 }
 
 function onEvent(topic, event) {

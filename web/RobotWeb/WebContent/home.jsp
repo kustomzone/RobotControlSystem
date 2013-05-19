@@ -76,7 +76,7 @@
 			try {
 				List<RobotInfo> robots = user_service.ListRobots().getRobots();
 				for (RobotInfo robot : robots) {
-					if (robot.getRobot_status() == RobotStatus.ONLINE) {
+					if (robot.getRobot_status() == RobotStatus.ONLINE || is_mobile) {
 						String target_url = is_mobile ? "robot_connect.jsp" : "control.jsp";
 						target_url += "?robot_id=" + robot.getRobot_id() +
 							"&robot_name=" + robot.getRobot_name();

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var kServerAddress = "ws://localhost:8080/RobotWeb/user_service";
+var kServerAddress = "ws://ec2-54-245-59-56.us-west-2.compute.amazonaws.com:8080/RobotWeb/user_service";
 var kSendCommandUri = "rpc://lib.robotics.rcs.server.UserService/SendCommand";
 
 var wamp_session;

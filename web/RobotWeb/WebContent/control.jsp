@@ -31,6 +31,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+  <link href="http://anthonyterrien.com/css/layout.css" rel="stylesheet">
+  <style type="text/css">
+    .ui-slider .ui-slider-handle {
+      width: 150px;
+    }
+  </style>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
   <title>RCS Robot Control</title>
   <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
@@ -43,7 +50,7 @@
   	var g_username = "<%= username %>";
   	var g_robot_id = "<%= robot_id %>";
   
-    function loadPage() {
+    $(document).ready(function () {
     	initialize();
 
         $("#speed_slider").slider({
@@ -120,18 +127,18 @@
               }
             }
         });
-	}
-    
-    function unloadPage() {
+    });
+
+    $(window).unload(function() {
     	uninitialize();
-    }
+    });
 
     function onStop() {
       $("#speed_slider").slider({value: 0});
       $("#speed_amount").val($("#speed_slider").slider("value"));
       sendCommand("STOP");
     }
-    
+
     function onKeyDown(event) {
     	var e = window.event ? window.event : event;
     	switch (e.keyCode) {
@@ -152,7 +159,7 @@
     }
   </script>
 </head>
-<body onload="loadPage()" onunload="unloadPage()" onkeydown="onKeyDown(event)">
+<body onkeydown="onKeyDown(event)">
 	<% if (username != null && user_service != null && user_service.isLoggedIn()) { %>
 	   	<table bgcolor="steelblue" width="100%">
 	   		<tr>

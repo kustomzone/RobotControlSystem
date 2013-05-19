@@ -41,6 +41,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>RCS Robot</title>
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
   <script type="text/javascript" src="js/cordova-2.7.0.js"></script>
   <script type="text/javascript" src="js/webSocket.min.js"></script>
   <script type="text/javascript">
@@ -51,16 +52,18 @@
   <script type="text/javascript" src="js/bluetooth.js"></script>
   <script type="text/javascript" src="js/robot.js"></script>
   <script type="text/javascript">
-    function loadPage() {
-    	initialize("<%= robot_id %>");
-    }
+    $(window).load(function() {  
+        setTimeout(function() {
+   	    initialize("<%= robot_id %>", "<%= bt_address %>");
+        }, 3000);
+    });
 
-    function unloadPage() {
+    $(window).unload(function() {
     	uninitialize();
-    }
+    });
   </script>
 </head>
-<body onload="loadPage()" onunload="unloadPage()">
+<body>
 	<% if (logged_in) { %>
 	   	<table bgcolor="steelblue" width="100%">
 	   		<tr>
@@ -79,8 +82,8 @@
 		<hr />
 		<p><%= robot_name %> is running.</p> 
 	    <p style="margin-left:5%">Activity log:</p>
-	    <textarea id="log" style="margin-left:5%;height:70%;width:90%" readonly="readonly">
-	    </textarea>
+	    <div id="log">
+	    </div>
 	<%
 		} else {
 	   		response.sendRedirect("login.html");
