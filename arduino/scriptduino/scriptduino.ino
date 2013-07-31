@@ -257,12 +257,13 @@ class Pwm : public Function {
 // for radio control
 #define RADIO_JOYSTICK_X_PIN 3  // movement of joystick in x direction
 #define RADIO_JOYSTICK_Y_PIN 2  // movement of joystick in y direction
-#define RADIO_MIN_HIGH_DURATION_MICROS 100  // minimum high signal duration (radio is off below this value)
+#define RADIO_MIN_HIGH_DURATION_MICROS 1000  // minimum high signal duration (radio is off below this value)
 #define RADIO_NEGATIVE_START_MICROS 1500    // signals below this value are interpreted as negative
 #define RADIO_NEGATIVE_RANGE_MICROS 350.0f  // difference between highest and lowest value in negative range
-#define RADIO_POSITIVE_START_MICROS 1550    // signals above this value are interpreted as positive
+#define RADIO_POSITIVE_START_MICROS 1530    // signals above this value are interpreted as positive
 #define RADIO_POSITIVE_RANGE_MICROS 350.0f  // difference between highest and lowest value in positive range
-#define RADIO_X_ZERO_RANGE 0.2f  // x values with smaller absolute values are interpreted as zero
+#define RADIO_IDLE 0.05f // speeds below this 
+#define RADIO_X_MIN 0.01f  // x values with smaller absolute values are interpreted as zero
 #define RADIO_XY_FACTOR 1.2f  // Effect of y on x scaling
 
 // Represents a motor.
@@ -277,9 +278,9 @@ class Motor {
     
     // Turns off the motor. Does not actively break.
     void stop() {
-      digitalWrite(speed_pin_, 0);
-      digitalWrite(forward_pin_, 0);
-      digitalWrite(backward_pin_, 0);
+      digitalWrite(speed_pin_, LOW);
+      digitalWrite(forward_pin_, LOW);
+      digitalWrite(backward_pin_, LOW);
       speed_ = 0;
     }
     
@@ -309,6 +310,10 @@ class Motor {
         analogWrite(speed_pin_, -speed);
       }
       speed_ = speed;
+    }
+    
+    int speed() const {
+      return speed_;
     }
   
   private:
@@ -422,6 +427,7 @@ void interruptHandler0() {
 void interruptHandler1() {
   radio_joystick_x_handler.handle();
 }
+
 // stop()
 // Stops the robot.
 class Stop : public Function {
@@ -434,10 +440,27 @@ class Stop : public Function {
     }
 
     static void stop() {
-      left_motor.stop();
-      right_motor.stop();
+        int left_speed = left_motor.speed();
+        int right_speed = right_motor.speed();
+        left_motor.stop();
+        right_motor.stop();
+        int ld, rd;
+        if (left_speed > 0) ld = -1;
+        else if (left_speed < 0) ld = 1;
+        if (right_speed > 0) rd = -1;
+        else if (right_speed < 0) rd = 1;
+        int limit = 128;//min(abs(left_speed), abs(right_speed));
+        for (int i = 1; i < limit; i++) {
+          left_motor.move(i * ld);
+          right_motor.move(i * rd);
+          delayMicroseconds(200);
+        }
+        delay(max(20, min(abs(left_speed), abs(right_speed))));
+        left_motor.stop();
+        right_motor.stop();
     }
 };
+
 // init();
 // Initializes the board for robot control.
 class Init : public Function {
@@ -642,21 +665,28 @@ void handleRadioControl() {
     float y = radio_joystick_y_handler.getJoystickPosition();
     float abs_x = abs(x);
     float abs_y = abs(y);
+    float abs_x2 = abs_x * abs_x;
+    float adj_x = (1.0f - abs_x) * abs_x2 + abs_x2 * abs_x2;
+    float adj_y = abs_y * abs_y;
     // Ignore radio commands on idle position.
     // This allows USB or Bluetooth control in conjunction with radio control.
-    if (abs_x + abs_y < 0.05f) {
+    if (adj_x + adj_y < RADIO_IDLE) {
       if (radio_controlled) {
         Stop::stop();
       }
       radio_controlled = false;
       return;
     }
-    float speed = max(abs_x, abs_y);
-    if (y < -0.1f) speed = -speed;
+    float speed = max(adj_x, adj_y);
     float direction = 0.0f;
-    if (abs_x > RADIO_X_ZERO_RANGE) {
-      direction = 1.0f - abs_y / RADIO_XY_FACTOR;
-      if (x < -RADIO_X_ZERO_RANGE) direction = -direction;
+    float x_zero_r = RADIO_X_MIN + adj_y / 10.0f;
+    if (adj_x > x_zero_r) {
+      direction = 1.0f - adj_y / RADIO_XY_FACTOR;
+      if (x < -RADIO_X_MIN) direction = -direction;
+    }
+    if (y < -0.1f) {
+      speed = -speed;
+      direction = -direction;
     }
     Move::move(speed, direction);
     radio_controlled = true;
@@ -733,4 +763,3 @@ void serialEvent3() {
   }
 }
 #endif
-
